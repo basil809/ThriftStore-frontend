@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retro Rack | Thrift</title>
+  <!--code for the icon-->
+  <link rel="icon" type="image/png" href="default.png"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <!--Boxicons link-->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <!-- material-icons link-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    @media (max-width: 768px) {
+        .footer-main, .footer-top, .footer-bottom {
+            display: none;
+        }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div class="logo">
+        <img src="cover.png" alt="store-logo">
+        <div class="name-moto" data-aos="fade-right">
+            <h1 style="font-family: 'Brush Script MT', cursive; color: #ff5722;">Retro Rack</h1>
+            <small>"Retro styles, Modern Styles"</small>
+        </div>
+    </div>
+
+    <input type="text" placeholder="Daily Deals" class="search-box">
+
+    <div class="icons" data-aos="fade-left">
+        <button class="icon-btn"> <i class='material-icons' >person</i> Sign in</button>
+        <button class="icon-btn"><i class='bx  bx-basket bx-flip-horizontal' style="font-size: 24px;"></i>  (0)</button>
+    </div>
+  </header>
+
+  <!-- CATEGORY TABS -->
+  <nav class="tabs">
+    <button class="active">Power</button>
+    <button>Audio</button>
+    <button>Smart & Office</button>
+    <button>Personal Care</button>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+
+    <!-- OPTIONAL SIDE ICON BAR (hidden on mobile) -->
+    <aside class="side-icons">
+      <span>🔌</span>
+      <span>🔋</span>
+      <span>⚡</span>
+      <span>💡</span>
+    </aside>
+
+    <!-- PRODUCT LIST -->
+    <section class="product-list">
+
+      <div class="product-card"
+        data-title="Slice Link 10000mAh 12W Power Bank"
+        data-price="KES 1,700"
+        data-rating="4.9 (3572)"
+        data-image="images/uploads/women_shoes/women_samba_shoes.jpeg"
+      >
+        <img src="images/uploads/women_shoes/women_samba_shoes.jpeg" alt="">
+        <div class="info">
+          <h4>Slice Link 10000mAh 12W Power Bank</h4>
+          <p class="rating">⭐ 4.9 (3572)</p>
+          <p class="price">KES 1,700</p>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="images/uploads/men_shoes/Dr. Martins_shoes.jpeg" alt="">
+        <div class="info">
+          <h4>Traveler Link 20 20000mAh</h4>
+          <p class="rating">⭐ 4.8 (2203)</p>
+          <p class="price">KES 2,700</p>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="images/uploads/mens/OOTD_1.jpeg" alt="">
+        <div class="info">
+          <h4>Slice Link Pro 10000mAh 22.5W</h4>
+          <p class="rating">⭐ 4.9 (453)</p>
+          <p class="price">KES 2,500</p>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="images/uploads/mens/OOTD_1.jpeg" alt="">
+        <div class="info">
+          <h4>Slice Link Pro 10000mAh 22.5W</h4>
+          <p class="rating">⭐ 4.9 (453)</p>
+          <p class="price">KES 2,500</p>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="images/uploads/mens/OOTD_1.jpeg" alt="">
+        <div class="info">
+          <h4>Slice Link Pro 10000mAh 22.5W</h4>
+          <p class="rating">⭐ 4.9 (453)</p>
+          <p class="price">KES 2,500</p>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="images/uploads/mens/OOTD_1.jpeg" alt="">
+        <div class="info">
+          <h4>Slice Link Pro 10000mAh 22.5W</h4>
+          <p class="rating">⭐ 4.9 (453)</p>
+          <p class="price">KES 2,500</p>
+        </div>
+      </div>
+
+      <div class="product-card"
+      >
+        <img src="images/uploads/women_shoes/women_samba_shoes.jpeg" alt="">
+        <div class="info">
+          <h4>Slice Link 10000mAh 12W Power Bank</h4>
+          <p class="rating">⭐ 4.9 (3572)</p>
+          <p class="price">KES 1,700</p>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="images/uploads/men_shoes/Dr. Martins_shoes.jpeg" alt="">
+        <div class="info">
+          <h4>Traveler Link 20 20000mAh</h4>
+          <p class="rating">⭐ 4.8 (2203)</p>
+          <p class="price">KES 2,700</p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <footer class="bottom-nav">
+        <span onclick="window.location.href='index.html'"><i class='material-icons'>home</i> </span>
+        <span class="active"><i class='material-icons'>dashboard</i></span>
+        <span><i class='material-icons'>shopping_cart</i></span>
+        <span><i class='material-icons'>account_circle</i></span>
+    </footer>
+
+    <footer class="large-footer" data-aos="fade-up">
+        <!-- Top Contact Row -->
+        <div class="footer-top">
+            <div class="container footer-top-row">
+            <div class="contact">
+                <span>📞 Call us </span>
+                <strong> +254742743059</strong>
+            </div>
+            <div class="contact">
+                <span>📧 Or send us an e-mail </span>
+                <strong><a href="mailto:info@.com">info@RetroRack.com</a></strong>
+            </div>
+            <div class="socials">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+            </div>
+            </div>
+        </div>
+
+        <!-- Main Footer Links -->
+        <div class="footer-main">
+            <div class="container footer-columns">
+            <div class="footer-col">
+                <h4>Information</h4>
+                <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Delivery Information</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Returns</a></li>
+                <li><a href="#">Site Map</a></li>
+                <li><a href="#">Store Locations</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>My Account</h4>
+                <ul>
+                <li><a href="#">My Account</a></li>
+                <li><a href="#">Order History</a></li>
+                <li><a href="#">Wish List</a></li>
+                <li><a href="#">Newsletter</a></li>
+                </ul>
+                <div class="payments">
+                <img src="images/mpesa_icon.png" alt="Interswitch">
+                <img src="images/masterCard_icon.png" alt="MasterCard">
+                <img src="images/visaCard_icon.png" alt="Visa">
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                <li><a href="#">Human Hair Weaves</a></li>
+                <li><a href="#">Lace Wigs</a></li>
+                <li><a href="#">Wig</a></li>
+                <li><a href="#">Frontals</a></li>
+                <li><a href="#">Closures</a></li>
+                <li><a href="#">Accessories</a></li>
+                </ul>
+            </div>
+            </div>
+        </div>
+
+        <!-- Bottom Footer -->
+        <div class="footer-bottom">
+            <div class="container footer-bottom-row">
+            <p>Copyright © 2025 <span style="color:#ff5722;">Retro Rack - Thrift Store</span>. All rights reserved.</p>
+            <p>Web Design by <a href="#" style="color:#ff5722;">Baschelle5</a></p>
+            </div>
+        </div>
+
+        <script>
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', () => {
+                const params = new URLSearchParams({
+                    title: card.dataset.title,
+                    price: card.dataset.price,
+                    rating: card.dataset.rating,
+                    image: card.dataset.image
+                });
+
+                window.location.href = `product-details.html?${params.toString()}`;
+                });
+            });
+        </script>
+
+    </footer>
+</body>
+</html>

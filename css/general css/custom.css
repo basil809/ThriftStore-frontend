@@ -1,0 +1,10 @@
+/*Hide the search bar on larger screens and devices*/
+@media only screen and (max-width: 768px) {
+    .searchBox-container {
+        display: none;
+    }
+
+    .desktop-only {
+        display: none;
+    }   
+}

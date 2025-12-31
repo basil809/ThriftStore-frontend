@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retro Rack | Profuct-view</title>
+  <!--code for the icon-->
+  <link rel="icon" type="image/png" href="default.png"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <!--Boxicons link-->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <!-- material-icons link-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .gallery img {
+        width: 100%;
+        height: auto;
+    }
+
+    .details {
+        padding: 15px;
+    }
+
+    .details h1 {
+        font-size: 20px;
+    }
+
+    .rating {
+        color: #666;
+    }
+
+    .features {
+        margin: 15px 0;
+        padding-left: 20px;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .add-cart {
+        flex: 1;
+        background: #fff;
+        border: 2px solid #000;
+        padding: 12px;
+    }
+
+    .buy-now {
+        flex: 1;
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 12px;
+    }
+
+    .description {
+        padding: 15px;
+    }
+
+    @media (min-width: 768px) {
+        body {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .gallery,
+        .details {
+            width: 50%;
+        }
+
+        body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .description {
+            grid-column: span 2;
+        }
+        .footer-main, .footer-top, .footer-bottom {
+            display: none;
+        }
+    }
+  </style>
+</head>
+<body>
+
+    <!--image/Gallery-->
+    <section class="gallery">
+        <img id="productImage" src="" alt="">
+    </section>
+
+    <section class="details">
+        <h1 id="productTitle"></h1>
+        <p class="rating">⭐ <span id="productRating"></span></p>
+        <h2 id="productPrice"></h2>
+
+        <ul class="features">
+            <li>✔ Premium retro quality</li>
+            <li>✔ Long-lasting wear</li>
+            <li>✔ Limited stock</li>
+        </ul>
+
+        <div class="description">
+            <h3>Description</h3>
+            <p>
+                This product is part of our Retro Rack collection, combining classic
+                design with modern comfort. Perfect for daily wear and statement looks.
+            </p>
+        </div>
+    </section>
+
+    <script src="scripts/product-details.js"></script>
+
+</body>
+</html>

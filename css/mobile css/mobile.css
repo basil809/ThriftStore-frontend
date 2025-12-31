@@ -1,0 +1,90 @@
+/* hide the 'Retro styles, modern styles' in the div logo when being view in smaller screens */
+/* Screens 768px and below (tablets & phones) */
+@media (max-width: 768px) {
+    .logo .name-moto {
+       display: none;
+    }
+
+    .header-row .search{
+        display: none;
+    }
+
+    /*displaying the icons buttons in the header row at the end of the row*/
+    .header-row {
+        justify-content: space-between;
+    }
+    .navbar {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .navbar .extra-links{
+        display: none;
+    }
+    /* adjusting the font size for promos to fit smaller screens */
+    .promo-content strong {
+        font-size: 10px;
+    }
+    .promo-content .cta{
+        font-size: 12px;
+    }
+    /*displaying the search bar in the small screens*/
+    .small-screens-searchbar{
+        display: block;
+    }
+    
+    .small-screens-searchbar .searchbar{
+        display: block;
+        background-color: white;
+        
+    }
+    .small-screens-searchbar .searchbar input{
+        border-radius: 5px;
+        border: 2px solid #ff5722;
+        width: 100%;
+        padding: 10px;
+    }
+
+     /* Style the search box container */
+    .searchBox-container {
+        display: flex;
+        justify-content: space-between; 
+        align-items: center;
+        padding-top: 20px;
+        
+        padding-bottom: 20px;
+    }
+
+    .searchBox-container .search-box {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Inner wrapper to align icon and input vertically and horizontally */
+    .search-inner {
+        display: flex;
+        align-items: center;
+        position: relative;
+        width: 50%; /* Adjust width as needed for your layout */
+        max-width: 100%; /* Optional: limit maximum width */
+    }
+
+    /* Style for the search icon - slightly bigger */
+    .search-inner .icon {
+        padding: 10px;
+        font-size: 24px; /* make icon larger */
+        color: white; /* icon color */
+        background-color: #ff5722;
+        border-radius: 5px 0 0 5px;
+    }
+}
+@media (max-width: 600px) {
+    .logo .name-moto {
+        display: none;
+    }
+
+    /*displaying the icons buttons in the header row at the end of the row*/
+    .header-row {
+        justify-content: space-between;
+    }
+}
