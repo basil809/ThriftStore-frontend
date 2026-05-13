@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Retro Rack | My Wishlist</title>
+         <!--code for the icon-->
+        <link rel="icon" type="image/png" href="images/system_img/default.png">
+         <link rel="stylesheet" href="css/general css/account.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+        <style>
+            * {
+                box-sizing: border-box;
+                font-family: Arial, sans-serif;
+            }
+            :root{
+                --orange:#ff5722;
+                --dark: #0a0a0a;
+                --muted: #f4f4f4;
+                --card-border: #e6e6e6;
+                --background-image: url("images/system_img/background.png");
+            }
+
+            body {
+                margin: 0;
+                background-image: url("images/system_img/background.png");
+            }
+
+            /* HEADER */
+            .header {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                display: flex;
+                justify-content: space-between;
+                padding: 20px 60px;
+                background: #fff;
+                border-bottom: 1px solid #eee;
+            }
+
+            .header nav a {
+                margin-left: 20px;
+                text-decoration: none;
+                color: #333;
+            }
+            .header nav a:hover{
+                color: var(--orange);
+            }
+
+            /* Styles the main background section */
+            .breadcrumb-header-section {
+                background-image: url("images/system_img/background.png");
+                /* Light gray background color from the image */
+                /* Bootstrap's py-5 handles padding top/bottom */
+            }
+
+            /* Styles the main title "Product Details" */
+            .breadcrumb-header-section h1 {
+                color: #333;
+                font-size: 36px; /* Adjust size to match image scale */
+            }
+
+            /* Styles the breadcrumb links */
+            .breadcrumb-item a {
+                color: #777; /* Medium gray color for links */
+                text-decoration: none; /* Removes underline from links */
+            }
+
+            .breadcrumb-item a:hover {
+                color: var(--orange); /* Optional: A subtle hover color */
+            }
+
+            /* Styles the active item "Product Details" */
+            .breadcrumb-item.active {
+                color: var(--orange); /* Keeps the active item the same color as the links */
+                font-weight: normal; /* Ensures it's not bolded by default BS styles */
+            }
+
+            .logo{display:flex;align-items:center;gap:12px;color:var(--orange)}
+            .logo img{height:40px;width:40px;object-fit:cover;border-radius:50%}
+            .logo h1{font-family:Playfair Display,serif;color:var(--orange);margin:0;font-size:22px}
+            .logo small{display:block;font-size:11px;color:#000000}
+
+            /*header icons*/
+            .right-nav .icons a{
+                color: #000;
+                margin-left: 15px;
+            }
+            .right-nav .icons a:hover{
+                color: var(--orange);
+            }
+
+            /* HAMBURGER MENU STYLES */
+            .hamburger {
+                display: none;
+                flex-direction: column;
+                cursor: pointer;
+                gap: 5px;
+                background: none;
+                border: none;
+                padding: 0;
+            }
+
+            .hamburger span {
+                width: 25px;
+                height: 3px;
+                background-color: #333;
+                border-radius: 2px;
+                transition: all 0.3s ease;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(10px, 10px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -7px);
+            }
+
+            .mobile-menu {
+                display: none;
+                position: fixed;
+                left: 0;
+                width: 100%;
+                background: #fff;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 999;
+                max-height: calc(100vh - 70px);
+                overflow-y: auto;
+            }
+
+            .mobile-menu.active {
+                display: flex;
+            }
+
+            .mobile-menu a {
+                padding: 12px 0;
+                text-decoration: none;
+                color: #333;
+                font-size: 16px;
+                border-bottom: 1px solid #eee;
+            }
+
+            .mobile-menu a:last-child {
+                border-bottom: none;
+            }
+
+            .mobile-menu a:hover {
+                color: var(--orange);
+            }
+
+            /* ===== HEADER MEDIA QUERIES ===== */
+            @media (max-width: 992px) {
+                .header {
+                    gap: 20px;
+                    padding: 15px 30px;
+                }
+
+                .header nav {
+                    display: flex;
+                    gap: 15px;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                }
+
+                .header nav a {
+                    margin-left: 0;
+                    font-size: 14px;
+                }
+
+                .right-nav {
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .logo h1 {
+                    font-size: 18px;
+                }
+
+                .breadcrumb-header-section h1 {
+                    font-size: 28px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .header {
+                    padding: 12px 15px;
+                }
+
+                .header .right-nav {
+                    display: none;
+                }
+
+                .header nav {
+                    display: none;
+                }
+
+                .hamburger {
+                    display: flex;
+                    margin-left: auto;
+                }
+
+                .hamburger:focus {
+                    outline: none;
+                }
+
+                .logo h1 {
+                    font-size: 16px;
+                }
+
+                .logo small {
+                    font-size: 9px;
+                }
+
+                .logo img {
+                    height: 35px;
+                    width: 35px;
+                }
+
+                .breadcrumb-header-section h1 {
+                    font-size: 22px;
+                    margin-bottom: 15px;
+                }
+
+                .breadcrumb {
+                    font-size: 12px;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .header {
+                    padding: 10px 12px;
+                    gap: 10px;
+                }
+
+                .logo {
+                    gap: 8px;
+                }
+
+                .logo img {
+                    height: 30px;
+                    width: 30px;
+                }
+
+                .logo h1 {
+                    font-size: 14px;
+                }
+
+                .logo small {
+                    font-size: 8px;
+                }
+
+                .breadcrumb-header-section h1 {
+                    font-size: 18px;
+                }
+
+                .breadcrumb {
+                    font-size: 11px;
+                }
+            }
+
+            /*footer styling*/
+            footer {
+                background: #000;
+                color: #fff;
+                font-size: 14px;
+            }
+
+            .footer-main .container{
+                max-width: var(--max-width);
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            .footer-top .container{
+                max-width: var(--max-width);
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            .footer-bottom .container{
+                max-width: var(--max-width);
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            .footer-top {
+                background: #fff;
+                color: #000;
+                padding: 15px 0;
+                border-top: 1px solid #ddd;
+            }
+            .footer-top-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .footer-top .contact strong a {
+                color: var(--orange);
+                text-decoration: none;
+            }
+            .footer-top .socials a {
+                margin-left: 10px;
+                font-size: 18px;
+                color: #000;
+            }
+
+            .footer-main {
+                padding: 40px 0;
+            }
+
+            .footer-columns {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+
+            .footer-col h4 {
+                color: #fff;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #ff5722;
+                display: inline-block;
+                padding-bottom: 5px;
+            }
+
+            .footer-col ul {
+                list-style: none;
+                padding: 0;
+            }
+
+            .footer-col ul li {
+                margin-bottom: 10px;
+            }
+
+            .footer-col ul li a {
+                color: #ccc;
+                text-decoration: none;
+            }
+
+            .footer-col ul li a:hover {
+                color: #ff5722;
+            }
+
+            .payments img {
+                max-width: 50px;
+                margin-right: 10px;
+            }
+
+            .footer-bottom {
+                background: #111;
+                padding: 10px 0;
+                font-size: 13px;
+            }
+
+            .footer-bottom-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            /* ===== FOOTER MEDIA QUERIES ===== */
+            @media (max-width: 992px) {
+                .footer-columns {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .footer-columns {
+                   flex-direction: column;
+                    align-items: center;
+                    text-align: center;
+                }
+
+                .footer-col {
+                    margin-bottom: 20px;
+                }
+
+                .payments img {
+                    display: inline-block;
+                    margin: 5px;
+                }
+
+                .footer-col h4 {
+                    font-size: 16px;
+                }
+
+                .footer-col ul li {
+                    font-size: 13px;
+                }
+
+                .footer-top-row {
+                    flex-direction: column;
+                    gap: 20px;
+                    align-items: center;
+                    text-align: center;
+                }
+
+                .footer-bottom-row {
+                    flex-direction: column;
+                    gap: 15px;
+                    text-align: center;
+                }
+
+                .footer-bottom-row p {
+                    font-size: 12px;
+                }
+
+                .footer-top {
+                    padding: 12px 0;
+                }
+
+                .footer-main {
+                    padding: 25px 0;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .footer-top {
+                    padding: 12px 0;
+                }
+
+                .footer-main {
+                    padding: 25px 0;
+                }
+
+                .footer-col h4 {
+                    font-size: 14px;
+                    margin-bottom: 10px;
+                }
+
+                .footer-col ul li {
+                    font-size: 12px;
+                    margin-bottom: 7px;
+                }
+
+                .payments img {
+                    max-width: 40px;
+                    margin-right: 8px;
+                }
+
+                .footer-bottom {
+                    padding: 8px 0;
+                }
+
+                .footer-bottom-row p {
+                    font-size: 11px;
+                }
+            }
+
+            /* ===== WISHLIST SECTION STYLES ===== */
+            .wishlist-section {
+                margin: 60px auto;
+                padding: 20px 0;
+            }
+
+            .wishlist-container {
+                width: 100%;
+            }
+
+            .wishlist-title {
+                font-size: 28px;
+                margin-bottom: 10px;
+                color: #333;
+                font-weight: 600;
+            }
+
+            .wishlist-subtitle {
+                color: #666;
+                font-size: 14px;
+                margin-bottom: 30px;
+            }
+
+            .item-count {
+                color: #ff5722;
+                font-weight: 600;
+            }
+
+            /* Wishlist Table */
+            .wishlist-table-container {
+                width: 100%;
+                overflow-x: auto;
+                margin-bottom: 40px;
+            }
+
+            .wishlist-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .wishlist-table thead {
+                background: #ff5722;
+                color: white;
+            }
+
+            .wishlist-table th {
+                padding: 16px;
+                text-align: left;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            .wishlist-table td {
+                padding: 16px;
+                border-bottom: 1px solid #eee;
+                font-size: 14px;
+            }
+
+            .wishlist-table tbody tr:hover {
+                background-color: #f9f9f9;
+            }
+
+            .wishlist-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .remove-col {
+                width: 50px;
+                text-align: center;
+            }
+
+            .remove-btn {
+                background: #ffcccc;
+                border: none;
+                color: #d32f2f;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            }
+
+            .remove-btn:hover {
+                background: #d32f2f;
+                color: white;
+                transform: scale(1.1);
+            }
+
+            /* Product Column */
+            .product-col {
+                min-width: 300px;
+            }
+
+            .product-info {
+                display: flex;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .product-info img {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                border-radius: 6px;
+            }
+
+            .product-details h5 {
+                font-size: 15px;
+                margin: 0 0 5px 0;
+                color: #333;
+                font-weight: 600;
+            }
+
+            .product-sku {
+                font-size: 12px;
+                color: #999;
+                margin: 0;
+            }
+
+            /* Price Column */
+            .price-col {
+                font-size: 16px;
+                font-weight: 600;
+                color: #ff5722;
+            }
+
+            /* Date Column */
+            .date-col {
+                color: #666;
+                font-size: 13px;
+            }
+
+            /* Stock Status Column */
+            .stock-col {
+                text-align: center;
+            }
+
+            .stock-badge {
+                display: inline-block;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            .stock-badge.in-stock {
+                background-color: #d4edda;
+                color: #155724;
+            }
+
+            .stock-badge.out-of-stock {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+
+            /* Action Column */
+            .action-col {
+                text-align: center;
+            }
+
+            .add-to-cart-btn {
+                background: #ff5722;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 13px;
+                transition: all 0.3s ease;
+            }
+
+            .add-to-cart-btn:hover {
+                background: #e64a19;
+                transform: translateY(-2px);
+                box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+            }
+
+            .add-to-cart-btn:disabled {
+                background: #ccc;
+                color: #999;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+            /* Wishlist Actions Section */
+            .wishlist-actions {
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Wishlist Link Section */
+            .wishlist-link-section {
+                margin-bottom: 30px;
+                padding-bottom: 30px;
+                border-bottom: 1px solid #eee;
+            }
+
+            .wishlist-link-section h4 {
+                font-size: 16px;
+                margin-bottom: 15px;
+                color: #333;
+                font-weight: 600;
+            }
+
+            .link-container {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .wishlist-link {
+                flex: 1;
+                padding: 12px;
+                border: 1px solid #ff5722;
+                border-radius: 30px;
+                background: #f9f9f9;
+                font-size: 13px;
+                color: #666;
+            }
+
+            .wishlist-link:focus {
+                outline: none;
+                background: white;
+                box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+            }
+
+            .copy-link-btn {
+                background: #ff5722;
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 30px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+                white-space: nowrap;
+            }
+
+            .copy-link-btn:hover {
+                background: #e64a19;
+                transform: translateY(-2px);
+                box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+            }
+
+            /* Action Buttons */
+            .action-buttons {
+                display: flex;
+                gap: 15px;
+                justify-content: flex-end;
+            }
+
+            .clear-wishlist-btn,
+            .add-all-to-cart-btn {
+                padding: 12px 24px;
+                border: none;
+                border-radius: 30px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .clear-wishlist-btn {
+                background: #f0f0f0;
+                color: #333;
+            }
+
+            .clear-wishlist-btn:hover {
+                background: #ddd;
+                transform: translateY(-2px);
+            }
+
+            .add-all-to-cart-btn {
+                background: #ff5722;
+                color: white;
+            }
+
+            .add-all-to-cart-btn:hover {
+                background: #e64a19;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+            }
+
+            /* Responsive Wishlist */
+            @media (max-width: 992px) {
+                .wishlist-section {
+                    margin: 50px auto;
+                }
+
+                .wishlist-title {
+                    font-size: 24px;
+                }
+
+                .wishlist-table th,
+                .wishlist-table td {
+                    padding: 14px;
+                }
+
+                .product-col {
+                    min-width: 280px;
+                }
+
+                .product-info img {
+                    width: 70px;
+                    height: 70px;
+                }
+
+                .product-details h5 {
+                    font-size: 15px;
+                }
+
+                .action-buttons {
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .wishlist-section {
+                    margin: 40px auto;
+                    padding: 15px;
+                }
+
+                .wishlist-title {
+                    font-size: 20px;
+                }
+
+                .wishlist-subtitle {
+                    font-size: 13px;
+                }
+
+                .wishlist-table-container {
+                    border-radius: 6px;
+                    overflow-x: auto;
+                }
+
+                .wishlist-table th,
+                .wishlist-table td {
+                    padding: 12px;
+                    font-size: 13px;
+                }
+
+                .wishlist-table th {
+                    font-size: 12px;
+                }
+
+                .product-col {
+                    min-width: 240px;
+                }
+
+                .product-info {
+                    gap: 12px;
+                }
+
+                .product-info img {
+                    width: 60px;
+                    height: 60px;
+                }
+
+                .product-details h5 {
+                    font-size: 13px;
+                    margin-bottom: 3px;
+                }
+
+                .product-sku {
+                    font-size: 11px;
+                }
+
+                .price-col {
+                    font-size: 15px;
+                }
+
+                .date-col,
+                .stock-col {
+                    font-size: 12px;
+                }
+
+                .stock-badge {
+                    padding: 5px 10px;
+                    font-size: 11px;
+                }
+
+                .add-to-cart-btn {
+                    padding: 7px 14px;
+                    font-size: 12px;
+                }
+
+                .remove-btn {
+                    width: 32px;
+                    height: 32px;
+                    font-size: 15px;
+                }
+
+                .wishlist-actions {
+                    padding: 20px;
+                }
+
+                .wishlist-link-section {
+                    margin-bottom: 25px;
+                    padding-bottom: 25px;
+                }
+
+                .wishlist-link-section h4 {
+                    font-size: 15px;
+                    margin-bottom: 12px;
+                }
+
+                .link-container {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                .wishlist-link {
+                    font-size: 12px;
+                    padding: 10px;
+                }
+
+                .copy-link-btn {
+                    width: 100%;
+                    padding: 10px 16px;
+                    font-size: 13px;
+                    justify-content: center;
+                }
+
+                .action-buttons {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                .clear-wishlist-btn,
+                .add-all-to-cart-btn {
+                    width: 100%;
+                    padding: 12px 20px;
+                    font-size: 14px;
+                    justify-content: center;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .wishlist-section {
+                    margin: 30px auto;
+                    padding: 12px;
+                }
+
+                .wishlist-title {
+                    font-size: 18px;
+                    margin-bottom: 8px;
+                }
+
+                .wishlist-subtitle {
+                    font-size: 12px;
+                    margin-bottom: 20px;
+                }
+
+                .wishlist-table {
+                    font-size: 11px;
+                    border-radius: 6px;
+                }
+
+                .wishlist-table th,
+                .wishlist-table td {
+                    padding: 10px;
+                    font-size: 11px;
+                }
+
+                .wishlist-table th {
+                    font-size: 11px;
+                    padding: 9px;
+                }
+
+                .remove-col {
+                    width: 38px;
+                }
+
+                .remove-btn {
+                    width: 28px;
+                    height: 28px;
+                    font-size: 13px;
+                }
+
+                .product-col {
+                    min-width: 180px;
+                }
+
+                .product-info {
+                    gap: 10px;
+                }
+
+                .product-info img {
+                    width: 50px;
+                    height: 50px;
+                }
+
+                .product-details h5 {
+                    font-size: 12px;
+                    margin-bottom: 2px;
+                }
+
+                .product-sku {
+                    font-size: 9px;
+                }
+
+                .price-col {
+                    font-size: 13px;
+                    font-weight: 600;
+                }
+
+                .date-col,
+                .stock-col {
+                    font-size: 11px;
+                }
+
+                .stock-badge {
+                    padding: 4px 8px;
+                    font-size: 10px;
+                }
+
+                .add-to-cart-btn {
+                    padding: 6px 10px;
+                    font-size: 11px;
+                }
+
+                .wishlist-actions {
+                    padding: 12px;
+                }
+
+                .wishlist-link-section {
+                    margin-bottom: 15px;
+                    padding-bottom: 15px;
+                }
+
+                .wishlist-link-section h4 {
+                    font-size: 13px;
+                    margin-bottom: 8px;
+                }
+
+                .link-container {
+                    flex-direction: column;
+                    gap: 8px;
+                }
+
+                .wishlist-link {
+                    font-size: 11px;
+                    padding: 8px;
+                }
+
+                .copy-link-btn {
+                    padding: 8px 12px;
+                    font-size: 12px;
+                }
+
+                .action-buttons {
+                    flex-direction: column;
+                    gap: 8px;
+                }
+
+                .clear-wishlist-btn,
+                .add-all-to-cart-btn {
+                    padding: 10px 16px;
+                    font-size: 12px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .wishlist-section {
+                    margin: 20px auto;
+                    padding: 10px;
+                }
+
+                .wishlist-title {
+                    font-size: 16px;
+                    margin-bottom: 6px;
+                }
+
+                .wishlist-subtitle {
+                    font-size: 11px;
+                    margin-bottom: 15px;
+                }
+
+                .wishlist-table-container {
+                    border-radius: 4px;
+                    margin-bottom: 25px;
+                }
+
+                .wishlist-table {
+                    font-size: 10px;
+                }
+
+                .wishlist-table th,
+                .wishlist-table td {
+                    padding: 8px;
+                    font-size: 10px;
+                }
+
+                .wishlist-table th {
+                    font-size: 10px;
+                    padding: 8px;
+                }
+
+                .remove-col {
+                    width: 35px;
+                }
+
+                .remove-btn {
+                    width: 26px;
+                    height: 26px;
+                    font-size: 12px;
+                }
+
+                .product-col {
+                    min-width: 150px;
+                }
+
+                .product-info {
+                    gap: 8px;
+                }
+
+                .product-info img {
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 4px;
+                }
+
+                .product-details h5 {
+                    font-size: 11px;
+                    margin-bottom: 2px;
+                }
+
+                .product-sku {
+                    font-size: 8px;
+                }
+
+                .price-col {
+                    font-size: 12px;
+                }
+
+                .date-col {
+                    font-size: 10px;
+                }
+
+                .stock-col {
+                    font-size: 10px;
+                }
+
+                .stock-badge {
+                    padding: 3px 6px;
+                    font-size: 9px;
+                }
+
+                .add-to-cart-btn {
+                    padding: 5px 8px;
+                    font-size: 10px;
+                }
+
+                .wishlist-actions {
+                    padding: 10px;
+                }
+
+                .wishlist-link-section {
+                    margin-bottom: 12px;
+                    padding-bottom: 12px;
+                    border-bottom: 1px solid #eee;
+                }
+
+                .wishlist-link-section h4 {
+                    font-size: 12px;
+                    margin-bottom: 8px;
+                }
+
+                .link-container {
+                    flex-direction: column;
+                    gap: 6px;
+                }
+
+                .wishlist-link {
+                    width: 100%;
+                    font-size: 10px;
+                    padding: 7px;
+                    border-radius: 20px;
+                }
+
+                .copy-link-btn {
+                    padding: 7px 10px;
+                    font-size: 11px;
+                    gap: 6px;
+                    border-radius: 20px;
+                }
+
+                .action-buttons {
+                    flex-direction: column;
+                    gap: 6px;
+                    justify-content: flex-start;
+                }
+
+                .clear-wishlist-btn,
+                .add-all-to-cart-btn {
+                    width: 100%;
+                    padding: 9px 12px;
+                    font-size: 11px;
+                    gap: 6px;
+                    border-radius: 20px;
+                }
+            }
+
+            @media (max-width: 360px) {
+                .wishlist-section {
+                    margin: 15px auto;
+                    padding: 8px;
+                }
+
+                .wishlist-title {
+                    font-size: 14px;
+                    margin-bottom: 5px;
+                }
+
+                .wishlist-subtitle {
+                    font-size: 10px;
+                    margin-bottom: 12px;
+                }
+
+                .wishlist-table th,
+                .wishlist-table td {
+                    padding: 6px;
+                    font-size: 9px;
+                }
+
+                .product-col {
+                    min-width: 130px;
+                }
+
+                .product-info img {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                .product-details h5 {
+                    font-size: 10px;
+                }
+
+                .product-sku {
+                    font-size: 7px;
+                }
+
+                .remove-btn {
+                    width: 24px;
+                    height: 24px;
+                    font-size: 11px;
+                }
+
+                .wishlist-actions {
+                    padding: 8px;
+                }
+
+                .wishlist-link-section h4 {
+                    font-size: 11px;
+                }
+
+                .wishlist-link {
+                    font-size: 9px;
+                    padding: 6px;
+                }
+
+                .copy-link-btn,
+                .clear-wishlist-btn,
+                .add-all-to-cart-btn {
+                    padding: 6px 10px;
+                    font-size: 10px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">
+                <img src="images/system_img/cover.png" alt="store-logo">
+                <div class="name-moto" data-aos="fdade-right">
+                <h1 style="font-family: 'Brush Script MT', cursive; color: #ff5722;">Retro Rack</h1>
+                <small>"Retro styles, Modern Styles"</small>
+                </div>
+            </div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="store.html">Shop</a>
+                <a href="#">Women</a>
+                <a href="#">Accessories</a>
+                <a href="about.html">About Us</a>
+                <!--a href="#">Blog</a--->
+            </nav>
+            <div class="right-nav">
+                <div class="icons">
+                <a href="#"><i class="fa fa-search"></i></a>
+                <a href="#"><i class="fa fa-heart"></i></a>
+                <a href="cart.html"><i class="fa fa-shopping-cart"></i></a>
+                <a href="account.html"><i class="fa fa-user"></i></a>
+
+                </div>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </header>
+        <!-- MOBILE MENU -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html">Home</a>
+            <a href="store.html">Shop</a>
+            <a href="#">Women</a>
+            <a href="about.html">About Us</a>
+            <a href="#">Accessories</a>
+            <a href="#">Wishlist</a>
+            <a href="cart.html">Shopping Cart</a>
+            <a href="account.html">Profile</a>
+        </div>
+        <!-- BREADCRUMB HEADER SECTION -->
+        <section class="breadcrumb-header-section">
+            <div class="container py-5"> <!-- py-5 adds padding top and bottom -->
+                <!-- Centered Main Title -->
+                <h1 class="text-center mb-3">My wishlist</h1>
+                
+                <!-- Centered Breadcrumb Navigation -->
+                <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center bg-transparent m-0 p-0">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="store.html">Shop</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">My Wishlist</li>
+                </ol>
+                </nav>
+            </div>
+        </section>
+
+        <!--WishList Content Section-->
+        <section class="wishlist-section container">
+            <div class="wishlist-container">
+                <h2 class="wishlist-title">My Wishlist</h2>
+                <p class="wishlist-subtitle">You have <span id="wishlist-count" class="item-count">0</span> items in your wishlist</p>
+
+                <!-- Wishlist Table -->
+                <div class="wishlist-table-container">
+                    <table class="wishlist-table">
+                        <thead>
+                            <tr>
+                                <th class="remove-col"></th>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Date Added</th>
+                                <th>Stock Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wishlist-items-body">
+                            <!--Items will be dynamically Loaded Here-->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Wishlist Actions -->
+                <div class="wishlist-actions">
+                    <!-- Wishlist Link Section -->
+                    <div class="wishlist-link-section">
+                        <h4>Share Your Wishlist</h4>
+                        <div class="link-container">
+                            <input type="text" class="wishlist-link" value="https://retroack.com/wishlist/share?id=user12345" readonly>
+                            <button class="copy-link-btn">
+                                <i class="fa fa-copy"></i> Copy Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="clear-wishlist-btn">
+                            <i class="fa fa-trash"></i> Clear Wishlist
+                        </button>
+                        <button class="add-all-to-cart-btn">
+                            <i class="fa fa-shopping-cart"></i> Add All to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr>
+        <section class="features container">
+            <div class="feature"><i class="icon">📦 </i><h4>Free Shipping</h4><p>Free shipping for order above $50</p></div>
+            <div class="feature"><i class="icon">💳 </i><h4>Flexible Payment</h4><p>Multiple secure payment options</p></div>
+            <div class="feature"><i class="icon">🎧 </i><h4>24×7 Support</h4><p>We support online all days</p></div>
+        </section>
+
+        <!-- NEWSLETTER -->
+        <section class="newsletter">
+            <h4>Our Newsletter</h4>
+            <h2>Subscribe to Our Newsletter to<br>
+                Get <span>Updates on Our Latest Offers</span></h2>
+            <p>Get 25% off on your first order just by subscribing to our newsletter</p>
+
+            <div class="newsletter-box">
+                <input type="email" placeholder="Enter Email Address">
+                <button>Subscribe</button>
+            </div>
+        </section>
+
+        <!--start of the footer-->
+        <footer data-aos="fade-up">
+            <!-- Top Contact Row -->
+            <div class="footer-top">
+                <div class="container footer-top-row">
+                    <div class="contact">
+                        <span>📞 Call us </span>
+                        <strong><a href="tel:+254742743059"> +254742743059</a></strong>
+                    </div>
+                    <div class="contact">
+                        <span>📧 Or send us an e-mail </span>
+                        <strong><a href="mailto:info@RetroRack.com">info@RetroRack.com</a></strong>
+                    </div>
+                    <div class="socials">
+                        <span>Follow us:</span>
+                        <a href="https://www.instagram.com/retro_rack_thriftstore?igsh=OWx2Zno1cHNpNWpp"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/retroRackThriftStore"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Footer Links -->
+            <div class="footer-main">
+                <div class="container footer-columns">
+                <div class="footer-col">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Delivery Information</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Site Map</a></li>
+                        <li><a href="#">Store Locations</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>My Account</h4>
+                    <ul>
+                        <li><a href="#">My Account</a></li>
+                        <li><a href="#">Order History</a></li>
+                        <li><a href="#">Wish List</a></li>
+                        <li><a href="#">Newsletter</a></li>
+                    </ul>
+                    <div class="payments">
+                        <img src="images/system_img/mpesa_icon.png" alt="Interswitch">
+                        <img src="images/system_img/masterCard_icon.png" alt="MasterCard">
+                        <img src="images/system_img/visaCard_icon.png" alt="Visa">
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="#">Shirts & T-shirts</a></li>
+                        <li><a href="#">Shoes</a></li>
+                        <li><a href="#">Wig/weaves</a></li>
+                        <li><a href="#">Shirts</a></li>
+                        <li><a href="#">Pants/Jeans</a></li>
+                        <li><a href="#">Accessories</a></li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="footer-bottom">
+                <div class="container footer-bottom-row">
+                    <p>Copyright © 2025 <span style="color:#ff5722;">Retro Rack - Thrift Store</span>. All rights reserved.</p>
+                    <p>Web Design by <a href="https://portfolio-swart-delta-f63zoke0po.vercel.app/" style="color:#ff5722;">Baschelle5</a></p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // Hamburger Menu Toggle
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            hamburger.addEventListener('click', function() {
+                hamburger.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+            });
+
+            // Close menu when a link is clicked
+            const menuLinks = mobileMenu.querySelectorAll('a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const isClickInsideMenu = mobileMenu.contains(event.target);
+                const isClickInsideHamburger = hamburger.contains(event.target);
+                
+                if (!isClickInsideMenu && !isClickInsideHamburger && mobileMenu.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                }
+            });
+
+            // ===== WISHLIST FUNCTIONALITY =====
+            
+           const backendURL = "http://localhost:3000";
+
+            async function fetchWishlist() {
+                const token = localStorage.getItem('token');
+                const tbody = document.getElementById('wishlist-items-body');
+
+                if (!token) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4">Please login to see your wishlist.</td></tr>`;
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${backendURL}/api/my-data`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    console.log("Wishlist Data:", data); // Debug log
+
+                    if (data.success && data.wishlist.length > 0) {
+                        renderWishlist(data.wishlist);
+                    } else {
+                        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4">Your wishlist is empty.</td></tr>`;
+                        document.getElementById('wishlist-count').innerText = "0";
+                    }
+                } catch (error) {
+                    console.error("Wishlist Error:", error);
+                }
+            }
+
+            function renderWishlist(wishlistItems) {
+                const tbody = document.getElementById('wishlist-items-body');
+                tbody.innerHTML = ''; 
+                document.getElementById('wishlist-count').innerText = wishlistItems.length;
+                const actionButtons = document.querySelector('.wishlist-actions');
+
+                if (wishlistItems.length === 0) {
+                    actionButtons.style.display = 'none'; // Hide buttons if empty
+                } else {
+                    actionButtons.style.display = 'block'; // Show buttons if items exist
+                }
+
+                wishlistItems.forEach(item => {
+                    const product = item.itemData;
+
+                    if (!product) {
+                        console.warn("Missing product data:", item);
+                        return;
+                    }
+
+                    const stockStatus = product.stock > 0 ? 'In Stock' : 'Out of Stock';
+                    const stockClass = product.stock > 0 ? 'in-stock' : 'out-of-stock';
+
+                    const dateAdded = new Date(item.addedAt).toLocaleDateString('en-US', {
+                        month: 'short', day: 'numeric', year: 'numeric'
+                    });
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="remove-col">
+                                <button class="remove-btn" onclick="removeFromWishlist('${item._id}')">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </td>
+
+                            <td class="product-col">
+                                <div class="product-info">
+                                    <img src="http://localhost:3000/uploads/products/${product.images?.[0]}" alt="${product.name}">
+                                    <div class="product-details">
+                                        <h5>${product.name || product.productName}</h5>
+                                        <p class="product-sku">SKU: ${product.sku || 'N/A'}</p>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="price-col">
+                                Ksh.${Number(product.price || product.newPrice).toLocaleString('en-KE')}
+                            </td>
+
+                            <td class="date-col">${dateAdded}</td>
+
+                            <td class="stock-col">
+                                <span class="stock-badge ${stockClass}">${stockStatus}</span>
+                            </td>
+
+                            <td class="action-col">
+                                <button class="add-to-cart-btn"
+                                    ${product.stock <= 0 ? 'disabled' : ''}
+                                    onclick="wishlistToCart('${item.itemId}', '${item.itemType}')">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Remove from Wishlist
+            // Function to remove a single item from the wishlist
+            async function removeFromWishlist(itemId) {
+                const token = localStorage.getItem('token');
+                const backendURL = "http://localhost:3000";
+
+                // Optional: Add a confirmation dialog
+                if (!confirm("Remove this item from your wishlist?")) return;
+
+                try {
+                    const response = await fetch(`${backendURL}/api/wishlist/remove/${itemId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        console.log("Item removed successfully");
+                        // Refresh the wishlist table to show current data
+                        fetchWishlist(); 
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                } catch (error) {
+                    console.error("Delete Error:", error);
+                    alert("Failed to connect to server.");
+                }
+            }
+
+            // Move Wishlist Item to Cart
+            async function wishlistToCart(productId) {
+                const token = localStorage.getItem('token');
+                
+                // Defaulting to first available size/color for simplicity 
+                // or you can redirect them to the product page
+                const cartData = { productId, qty: 1, color: 'Default', size: 'M' };
+
+                const res = await fetch(`${backendURL}/api/sync-cart`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify(cartData)
+                });
+
+                if (res.ok) {
+                    alert("Moved to cart! 🛒");
+                    // Optional: Call remove function here if you want it gone from wishlist
+                }
+            }
+
+            // Clear Wishlist
+            async function clearWishlist() {
+                // 1. Ask for confirmation
+                const confirmClear = confirm("Are you sure you want to remove all items from your wishlist?");
+                if (!confirmClear) return;
+
+                const token = localStorage.getItem('token');
+                const backendURL = "http://localhost:3000";
+
+                try {
+                    const response = await fetch(`${backendURL}/api/wishlist/clear`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // 2. Update the UI
+                        // We call fetchWishlist() again to refresh the table and item count
+                        fetchWishlist(); 
+                        alert("Wishlist cleared!");
+                    } else {
+                        alert("Failed to clear wishlist: " + data.message);
+                    }
+                } catch (error) {
+                    console.error("Error clearing wishlist:", error);
+                    alert("An error occurred. Please try again.");
+                }
+            }
+
+            // 3. Attach the function to your button
+            // Make sure the class matches your HTML exactly
+            document.querySelector('.clear-wishlist-btn').addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent page jump if it's a link
+                clearWishlist();
+            });
+
+            // Initial Load
+            document.addEventListener('DOMContentLoaded', fetchWishlist);
+
+            // Persist login check
+            window.addEventListener('load', () => {
+                const user = localStorage.getItem('currentUser');
+                if (!user) {
+                    // Optionally redirect to login page
+                    window.location.href = 'index.html';
+                } else {
+                    // User is logged in, you can also display their name or profile info here
+                    console.log("Logged in as:", user);
+                }
+            });
+
+            // Handle Newsletter subscription save the email to the backend and show a success message
+            document.querySelector(".newsletter-box button").addEventListener("click", async () => {
+                const email = document.querySelector(".newsletter-box input").value;
+
+                if (!email) {
+                    alert("Please enter your email address.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch("http://localhost:3000/api/subscriptions/subscribe", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email })
+                    });
+
+                    const data = await response.json();
+                    alert(data.message || "Subscription successful!");
+                    document.querySelector(".newsletter-box input").value = ""; // Clear input
+                } catch (error) {
+                    console.error("Subscription error:", error);
+                    alert("An error occurred. Please try again later.");
+                }
+            });
+        </script>
+    </body>
+</html>

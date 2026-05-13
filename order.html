@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order | Retro Rack</title>
+
+    <link rel="icon" type="image/png" href="images/system_img/default.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/general css/checkout.css">
+    <style>
+        body {
+            background: url("images/system_img/background.png");
+        }
+
+        /* HEADER */
+        .success-header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .check-icon {
+            width: 60px;
+            height: 60px;
+            background: #ff5722;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #000;
+            margin-bottom: 15px;
+        }
+
+        /* ORDER INFO BAR */
+        .order-info {
+            width: 90%;
+            margin: auto;
+            background: #ff5722;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-radius: 5px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .order-info div {
+            font-size: 14px;
+        }
+
+        .invoice-btn {
+            color: #ff5722;
+            border-radius: 10px;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        /* ORDER DETAILS */
+        .order-details {
+            width: 90%;
+            margin: 30px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .order-details h3 {
+            margin-bottom: 20px;
+        }
+
+        /* PRODUCT ROW */
+        .product {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .product-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .product img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+        }
+
+        /* SUMMARY */
+        .summary {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+
+        .summary div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .total {
+            font-weight: bold;
+        }
+
+        .discount {
+            color: red;
+        }
+
+        @media print {
+            .header, .footer, .newsletter, .invoice-btn, .check-icon {
+                display: none !important;
+            }
+            
+            .order-details, .order-info {
+                border: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">
+            <img src="images/system_img/cover.png" alt="store-logo">
+            <div class="name-moto" data-aos="fdade-right">
+            <h1 style="font-family: 'Brush Script MT', cursive; color: #ff5722;">Retro Rack</h1>
+            <small>"Retro styles, Modern Styles"</small>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="store.html">Shop</a>
+            <a href="#">Women</a>
+            <a href="#">Accessories</a>
+            <a href="about.html">About Us</a>
+            <!--a href="#">Blog</a--->
+        </nav>
+        <div class="right-nav">
+            <div class="icons">
+                <a href="#"><i class="fa fa-search"></i></a>
+                <a href="wishlist.html"><i class="fa fa-heart"></i></a>
+                <a href="cart.html"><i class="fa fa-shopping-cart"></i></a>
+                <a href="account.html"><i class="fa fa-user"></i></a>
+            </div>
+        </div>
+        <button class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="store.html">Shop</a>
+        <a href="#">Women</a>
+        <a href="about.html">About Us</a>
+        <a href="#">Accessories</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="cart.html">Shopping Cart</a>
+        <a href="#">Profile</a>
+    </div>
+    <!-- BREADCRUMB HEADER SECTION -->
+    <section class="breadcrumb-header-section">
+        <div class="container py-5"> <!-- py-5 adds padding top and bottom -->
+            <!-- Centered Main Title -->
+            <h1 class="text-center mb-3">Order Completed</h1>
+            
+            <!-- Centered Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center bg-transparent m-0 p-0">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="store.html">Shop</a></li>
+                <li class="breadcrumb-item"><a href="checkout.html">Checkout</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Order Completed</li>
+            </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- SUCCESS HEADER -->
+    <section class="success-header">
+        <div class="check-icon">✔</div>
+        <h2>Your order is completed!</h2>
+        <p>Thank you. Your order has been received.</p>
+    </section>
+
+    <!-- ORDER INFO BAR -->
+    <section class="order-info">
+        <div><strong>Order ID</strong><br><span id="display-order-id">#----</span></div>
+        <div><strong>Payment Method</strong><br>M-pesa</div>
+        <div><strong>Transaction ID</strong><br><span id="display-trx-id">----</span></div>
+        <div><strong>Estimated Delivery Date</strong><br><span id="display-delivery-date">----</span></div>
+        <button class="invoice-btn" onclick="window.print()">Print Receipt</button>
+    </section>
+
+    <!-- ORDER DETAILS -->
+    <section class="order-details">
+
+        <h3>Order Details</h3>
+
+        <!-- PRODUCT -->
+        <div id="order-items-list">
+            <!--Items will be dynamically inserted here-->
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="summary">
+            <div><span>Subtotal</span><span id="display-subtotal">Ksh. 0.00</span></div>
+            <div><span>Shipping</span><span id="display-shipping">Ksh. 0.00</span></div>
+            <div class="total"><span>Total</span><span id="display-total">Ksh. 0.00</span></div>
+        </div>
+
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features container">
+        <div class="feature"><i class="icon">📦 </i><h4>Free Shipping</h4><p>Free shipping for order above $50</p></div>
+        <div class="feature"><i class="icon">💳 </i><h4>Flexible Payment</h4><p>Multiple secure payment options</p></div>
+        <div class="feature"><i class="icon">🎧 </i><h4>24×7 Support</h4><p>We support online all days</p></div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="newsletter">
+        <h4>Our Newsletter</h4>
+        <h2>Subscribe to Our Newsletter to<br>
+            Get <span>Updates on Our Latest Offers</span></h2>
+        <p>Get 25% off on your first order just by subscribing to our newsletter</p>
+
+        <div class="newsletter-box">
+            <input type="email" placeholder="Enter Email Address">
+            <button>Subscribe</button>
+        </div>
+    </section>
+
+    <!--start of the footer-->
+    <footer data-aos="fade-up">
+        <!-- Top Contact Row -->
+        <div class="footer-top">
+            <div class="container footer-top-row">
+                <div class="contact">
+                    <span>📞 Call us </span>
+                    <strong><a href="tel:+254742743059"> +254742743059</a></strong>
+                </div>
+                <div class="contact">
+                    <span>📧 Or send us an e-mail </span>
+                    <strong><a href="mailto:info@RetroRack.com">info@RetroRack.com</a></strong>
+                </div>
+                <div class="socials">
+                    <span>Follow us:</span>
+                    <a href="https://www.instagram.com/retro_rack_thriftstore?igsh=OWx2Zno1cHNpNWpp"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/retroRackThriftStore"><i class="fab fa-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Footer Links -->
+        <div class="footer-main">
+            <div class="container footer-columns">
+            <div class="footer-col">
+                <h4>Information</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Delivery Information</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Site Map</a></li>
+                    <li><a href="#">Store Locations</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>My Account</h4>
+                <ul>
+                    <li><a href="#">My Account</a></li>
+                    <li><a href="#">Order History</a></li>
+                    <li><a href="#">Wish List</a></li>
+                    <li><a href="#">Newsletter</a></li>
+                </ul>
+                <div class="payments">
+                    <img src="images/system_img/mpesa_icon.png" alt="Interswitch">
+                    <img src="images/system_img/masterCard_icon.png" alt="MasterCard">
+                    <img src="images/system_img/visaCard_icon.png" alt="Visa">
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="#">Shirts & T-shirts</a></li>
+                    <li><a href="#">Shoes</a></li>
+                    <li><a href="#">Wig/weaves</a></li>
+                    <li><a href="#">Shirts</a></li>
+                    <li><a href="#">Pants/Jeans</a></li>
+                    <li><a href="#">Accessories</a></li>
+                </ul>
+            </div>
+            </div>
+        </div>
+
+        <!-- Bottom Footer -->
+        <div class="footer-bottom">
+            <div class="container footer-bottom-row">
+                <p>Copyright © 2025 <span style="color:#ff5722;">Retro Rack - Thrift Store</span>. All rights reserved.</p>
+                <p>Web Design by <a href="https://portfolio-swart-delta-f63zoke0po.vercel.app/" style="color:#ff5722;">Baschelle5</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API = "http://localhost:3000/api";
+        const token = localStorage.getItem("token");
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderId = urlParams.get('id');
+
+            // Check if we are viewing a specific order via URL ID
+            if (urlOrderId) {
+                await fetchOrderFromServer(urlOrderId);
+            } 
+            // Otherwise, check if we just placed an order (localStorage)
+            else {
+                const localOrderData = JSON.parse(localStorage.getItem('lastOrder'));
+                if (localOrderData) {
+                    renderOrderDetails(localOrderData);
+                } else {
+                    alert("No order details found.");
+                    window.location.href = "account.html";
+                }
+            }
+        });
+
+        async function fetchOrderFromServer(id) {
+            try {
+                const res = await fetch(`${API}/orders/${id}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    renderOrderDetails(data.order);
+                } else {
+                    alert("Order not found in database.");
+                    window.location.href = "account.html";
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                alert("Error connecting to server.");
+            }
+        }
+
+        function renderOrderDetails(orderData) {
+            // 1. Populate the Info Bar
+            // Use the ID from your HTML (make sure IDs match your HTML exactly)
+            document.getElementById('display-order-id').innerText = `#${orderData.orderId}`;
+            document.getElementById('display-trx-id').innerText = orderData.transactionId || 'N/A';
+            
+            // 2. Handle Dates
+            const orderDate = orderData.createdAt ? new Date(orderData.createdAt) : new Date();
+            const deliveryDate = new Date(orderDate);
+            deliveryDate.setDate(deliveryDate.getDate() + 3);
+            
+            const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('display-delivery-date').innerText = deliveryDate.toLocaleDateString('en-GB', dateOptions);
+
+            // 3. Populate Product List
+            const itemsContainer = document.getElementById('order-items-list');
+            itemsContainer.innerHTML = ''; 
+
+            orderData.items.forEach(item => {
+                // Note: Use 'item.qty' or 'item.quantity' depending on your DB Schema
+                const quantity = item.qty || item.quantity || 1;
+                
+                itemsContainer.innerHTML += `
+                    <div class="product">
+                        <div class="product-left">
+                            <img src="http://localhost:3000/uploads/products/${item.image}" 
+                                onerror="this.src='placeholder.jpg'" 
+                                alt="${item.name || item.productName}">
+                            <div>
+                                <h4>${item.name || item.productName}</h4>
+                                <p>Color: ${item.color || 'N/A'} | Size: ${item.size || 'N/A'} | Qty: ${quantity}</p>
+                            </div>
+                        </div>
+                        <div>
+                            Ksh. ${Number(item.price * quantity).toLocaleString()}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // 4. Update the Summary
+            document.getElementById('display-subtotal').innerText = `Ksh. ${Number(orderData.subtotal || (orderData.totalAmount - (orderData.shippingFee || 0))).toLocaleString()}`;
+            document.getElementById('display-shipping').innerText = `Ksh. ${Number(orderData.shippingFee || 0).toLocaleString()}`;
+            document.getElementById('display-total').innerText = `Ksh. ${Number(orderData.totalAmount).toLocaleString()}`;
+        }
+    </script>
+</body>
+</html>

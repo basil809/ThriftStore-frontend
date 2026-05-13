@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ | Retro Rack </title>
+    <!--code for the icon-->
+    <link rel="icon" type="image/png" href="images/system_img/default.png"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" integrity="sha512-x3eD4arDty4pY39WbS2IQ3Kkfy91VIyKCsm/n5PeF+nswdwC0GeAs+z0mK8hT277Bpafq9BvHxmK5k3Z5hPV7Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --bg: #f9f7f4;
+            --surface: #ffffff;
+            --border: #e3e1de;
+            --text: #1f1f1f;
+            --muted: #6f6f6f;
+            --accent: #ff5722;
+            --accent-dark: #d84315;
+            --shadow: 0 18px 50px rgba(34, 34, 34, 0.08);
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        body {
+            background: linear-gradient(180deg, #fef9f6 0%, #f7f2ef 100%);
+        }
+
+        .page-container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        header {
+            padding: 22px 0 10px;
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #fff;
+            padding: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-text {
+            display: grid;
+            gap: 2px;
+        }
+
+        .logo-text .brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #242424;
+        }
+
+        .logo-text .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav {
+            background: #fff;
+            border: 1px solid rgba(255,87,34,0.12);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            list-style: none;
+            margin: 0;
+            padding: 14px 20px;
+        }
+
+        .nav-list li {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav-list li a {
+            color: var(--muted);
+            transition: color 0.25s ease;
+        }
+
+        .nav-list li a:hover,
+        .nav-list li.active a {
+            color: var(--accent);
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: center;
+            margin: 32px 0 40px;
+            padding: 32px;
+            border-radius: var(--radius);
+            background: #fff;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-copy h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            line-height: 1.02;
+            margin: 0 0 18px;
+        }
+
+        .hero-copy p {
+            max-width: 620px;
+            line-height: 1.8;
+            color: var(--muted);
+            font-size: 1rem;
+            margin-bottom: 24px;
+        }
+
+        .hero-copy .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .hero-copy .meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 999px;
+            background: #fff4ef;
+            color: var(--accent-dark);
+            font-weight: 600;
+        }
+
+        .hero-figure {
+            min-height: 340px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, rgba(255,87,34,0.15), rgba(255,87,34,0.03));
+            display: grid;
+            align-items: center;
+            justify-items: center;
+            padding: 28px;
+        }
+
+        .hero-figure img {
+            width: 100%;
+            max-width: 360px;
+            border-radius: 22px;
+            object-fit: cover;
+            box-shadow: var(--shadow);
+        }
+
+        .faq-intro {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .faq-intro h2 {
+            margin: 0;
+            font-size: clamp(1.8rem, 2.2vw, 2.4rem);
+        }
+
+        .faq-intro p {
+            margin: 0;
+            color: var(--muted);
+            max-width: 630px;
+        }
+
+        .faq-search {
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+        }
+
+        .faq-search input {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 14px 18px 14px 46px;
+            font-size: 0.98rem;
+            background: #fff;
+            color: var(--text);
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .faq-search i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .faq-card {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid transparent;
+            overflow: hidden;
+        }
+
+        .faq-card h3 {
+            margin: 0;
+            padding: 24px;
+            font-size: 1.1rem;
+            background: #fff8f4;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .accordion {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid rgba(224, 220, 217, 0.9);
+        }
+
+        .accordion-button {
+            width: 100%;
+            padding: 18px 24px;
+            background: transparent;
+            border: none;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .accordion-button:hover {
+            background: #fff7f1;
+        }
+
+        .accordion-button .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fff4ef;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .accordion-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+            padding: 0 24px;
+            background: #fff;
+        }
+
+        .accordion-panel.open {
+            padding: 18px 24px 24px;
+            max-height: 260px;
+        }
+
+        .accordion-panel p {
+            margin: 0;
+            line-height: 1.8;
+            color: var(--muted);
+            font-size: 0.96rem;
+        }
+
+        .faq-support {
+            margin-top: 36px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .support-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,87,34,0.12);
+        }
+
+        .support-card h3 {
+            margin-top: 0;
+            font-size: 1.25rem;
+        }
+
+        .support-card p {
+            color: var(--muted);
+            line-height: 1.85;
+            margin-bottom: 22px;
+        }
+
+        .support-card a.button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 999px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 700;
+            transition: background 0.2s ease;
+        }
+
+        .support-card a.button:hover {
+            background: var(--accent-dark);
+        }
+        /*styling the footer for mobile view*/
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background: #fff;
+            border-top: 1px solid #ddd;
+        }   
+        /* the acitve button to have different background and an orange color bottom border */
+        .bottom-nav .active {
+            color: #ff5722;
+            border-bottom: 2px solid #ff5722;
+        }
+        .bottom-nav span .material-icons {
+        font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+
+        /* Hide desktop nav on mobile */
+        @media (max-width: 768px) {
+            .nav-list {
+                display: none;
+            }
+            .footer-row{
+                display: none;
+            }
+        }
+
+        /* Tablet View (tablets and smaller desktops) */
+        @media screen and (max-width: 1024px) {
+            .page-container {
+                padding: 0 18px 52px;
+            }
+
+            .hero {
+                padding: 28px;
+                gap: 24px;
+            }
+
+            .hero-copy h1 {
+                font-size: clamp(2.2rem, 3.5vw, 3.5rem);
+            }
+
+            .hero-copy p {
+                max-width: 100%;
+                font-size: 0.98rem;
+            }
+
+            .hero-figure {
+                min-height: 280px;
+                padding: 24px;
+            }
+
+            .faq-intro {
+                gap: 18px;
+            }
+
+            .faq-search {
+                max-width: 100%;
+            }
+
+            .faq-grid,
+            .faq-support {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .faq-card {
+                min-width: 0;
+            }
+
+            .support-card {
+                padding: 24px;
+            }
+
+            .footer-row {
+                grid-template-columns: repeat(2, minmax(180px, 1fr));
+            }
+        }
+
+        /* Small tablets and large phones */
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .faq-grid,
+            .faq-support {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-copy,
+            .hero-figure {
+                width: 100%;
+            }
+
+            .hero-figure img {
+                max-width: 100%;
+            }
+        }
+
+        /* DESKTOP VIEW */
+        @media (min-width: 768px) {
+            .bottom-nav {
+                display: none;
+            }
+            /* Footer spacing */
+            footer {
+                margin-top: 52px;
+                padding-top: 40px;
+                border-top: 1px solid rgba(0,0,0,0.06);
+                color: var(--muted);
+            }
+
+            .footer-row {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(180px, 1fr));
+                gap: 24px;
+            }
+
+            .footer-col h4 {
+                margin-bottom: 18px;
+                font-size: 1rem;
+                color: #222;
+            }
+
+            .footer-col ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: grid;
+                gap: 12px;
+            }
+
+            .footer-col li a {
+                color: var(--muted);
+                font-size: 0.95rem;
+            }
+
+            .footer-bottom {
+                margin-top: 28px;
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 14px;
+                font-size: 0.95rem;
+            }
+
+            .footer-bottom a {
+                color: var(--accent);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-list {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .faq-search {
+                max-width: 100%;
+            }
+
+            .hero {
+                padding: 24px;
+            }
+
+            .page-container {
+                padding: 0 14px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <header>
+            <div class="header-row">
+                <div class="logo">
+                    <img src="images/system_img/cover.png" alt="Retro Rack logo">
+                    <div class="logo-text">
+                        <div class="brand">Retro Rack</div>
+                        <div class="subtitle">Thrift Store FAQ</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav>
+            <ul class="nav-list">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="store.html">Shop</a></li>
+                <li><a href="about.html">About</a></li>
+                <li class="active"><a href="#">FAQ</a></li>
+                <li><a href="account.html">Account</a></li>
+            </ul>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-copy">
+                <h1>Need answers? Start here.</h1>
+                <p>Find fast, friendly help for orders, shipping, returns, product details, and account support. Our FAQ page is designed to answer your most common questions quickly.</p>
+                <div class="hero-meta">
+                    <span class="meta-pill"><i class='bx bx-time-five'></i> Fast response</span>
+                    <span class="meta-pill"><i class='bx bx-shield-quarter'></i> Secure shopping</span>
+                </div>
+            </div>
+            <div class="hero-figure">
+                <img src="images/system_img/cover.png" alt="FAQ support illustration">
+            </div>
+        </section>
+
+        <section>
+            <div class="faq-intro">
+                <div>
+                    <h2>Frequently Asked Questions</h2>
+                    <p>Search the most common questions or browse our FAQ categories to get the answer you need without waiting.</p>
+                </div>
+                <div class="faq-search">
+                    <i class='bx bx-search'></i>
+                    <input id="faqSearch" type="search" placeholder="Search FAQs...">
+                </div>
+            </div>
+
+            <div class="faq-grid">
+                <article class="faq-card">
+                    <h3>Ordering</h3>
+                    <ul class="accordion" id="orderingFaq">
+                        <li class="accordion-item" data-faq-key="how-to-order">
+                            <button class="accordion-button" type="button">
+                                How do I place an order?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>Browse the store, add items to your cart, then proceed to checkout. You can pay with Mpesa, Visa, or MasterCard.</p>
+                            </div>
+                        </li>
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                Can I update my order after checkout?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>Once an order is placed, changes are limited. Contact our support team immediately if you need to update shipping or item details.</p>
+                            </div>
+                        </li>
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                Is there a minimum order value?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>No. You can order any item from the store. Shipping fees may still apply depending on the delivery location.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </article>
+
+                <article class="faq-card">
+                    <h3>Shipping</h3>
+                    <ul class="accordion" id="shippingFaq">
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                How long does delivery take?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>Delivery within Nairobi is usually within 24 hours. Outside Nairobi, delivery may take 2-4 business days depending on location.</p>
+                            </div>
+                        </li>
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                Do you ship outside Kenya?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>Yes, we support international shipping. Contact us for shipping costs and delivery estimates outside Kenya.</p>
+                            </div>
+                        </li>
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                How can I track my order?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>Once your order ships, we will send tracking details via email or WhatsApp. You can also check your order status in your account dashboard.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </article>
+
+                <article class="faq-card">
+                    <h3>Payments</h3>
+                    <ul class="accordion" id="paymentsFaq">
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                What payment methods do you accept?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>We accept Mpesa, Visa, MasterCard, and secure card payments from major providers.</p>
+                            </div>
+                        </li>
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                Is my payment information secure?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>Yes. Payments are processed through secure gateways and your payment details are never stored on our website.</p>
+                            </div>
+                        </li>
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                Can I get a refund?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>Refunds are issued for eligible returns and cancellations. Please review our returns policy or contact support for help.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </article>
+
+                <article class="faq-card">
+                    <h3>Returns & Support</h3>
+                    <ul class="accordion" id="returnsFaq">
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                What is your return policy?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>We accept returns within 7 days for damaged or incorrect items. The item must be in original condition with packaging.</p>
+                            </div>
+                        </li>
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                How do I submit a support request?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>Use the contact form on our Contact page or email us at info@RetroRack.com. We respond quickly during business hours.</p>
+                            </div>
+                        </li>
+                        <li class="accordion-item">
+                            <button class="accordion-button" type="button">
+                                Can I change my shipping address after ordering?
+                                <span class="icon">+</span>
+                            </button>
+                            <div class="accordion-panel">
+                                <p>If your order has not shipped yet, we may be able to update your address. Contact us immediately with your order number.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </article>
+            </div>
+
+            <div class="faq-support">
+                <div class="support-card">
+                    <h3>Still need help?</h3>
+                    <p>Our team is ready to answer questions about your order, products, shipping, or returns. Reach out and we'll respond as soon as possible.</p>
+                    <a class="button" href="mailto:info@RetroRack.com"><i class='bx bx-envelope'></i> Email Support</a>
+                </div>
+                <div class="support-card">
+                    <h3>Call customer service</h3>
+                    <p>Prefer to talk directly? Call us for urgent questions or order assistance. We're available Monday through Saturday.</p>
+                    <a class="button" href="tel:+254742743059"><i class='bx bx-phone'></i> +254 742 743 059</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Navigation for Mobile -->
+        <footer class="bottom-nav">
+            <span onclick="window.location.href='index.html'"><i class='material-icons'>home</i></span>
+            <span onclick="window.location.href='store.html'"><i class='material-icons'>dashboard</i></span>
+            <span onclick="window.location.href='cart.html'"><i class='material-icons'>shopping_cart</i></span>
+            <span onclick="window.location.href='account.html'"><i class='material-icons'>account_circle</i></span>
+        </footer>
+
+        <footer>
+            <div class="footer-row">
+                <div class="footer-col">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="#">Delivery Info</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Order Tracking</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>My Account</h4>
+                    <ul>
+                        <li><a href="account.html">My Account</a></li>
+                        <li><a href="wishlist.html">Wish List</a></li>
+                        <li><a href="cart.html">Cart</a></li>
+                        <li><a href="admin.html">Admin</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="tel:+254742743059">+254 742 743 059</a></li>
+                        <li><a href="mailto:info@RetroRack.com">info@RetroRack.com</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Facebook</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Copyright © 2025 <strong>Retro Rack</strong>. All rights reserved.</p>
+                <p>Web Design by <a href="https://portfolio-swart-delta-f63zoke0po.vercel.app/">Baschelle5</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const faqSearch = document.getElementById('faqSearch');
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+        const faqItems = document.querySelectorAll('.accordion-item');
+
+        faqSearch.addEventListener('input', () => {
+            const query = faqSearch.value.toLowerCase();
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.accordion-button').textContent.toLowerCase();
+                const answer = item.querySelector('.accordion-panel').textContent.toLowerCase();
+                const match = question.includes(query) || answer.includes(query);
+
+                item.style.display = match ? '' : 'none';
+            });
+        });
+
+        accordionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const panel = button.nextElementSibling;
+                const isOpen = panel.classList.contains('open');
+
+                document.querySelectorAll('.accordion-panel').forEach(panel => panel.classList.remove('open'));
+                document.querySelectorAll('.accordion-button .icon').forEach(icon => icon.textContent = '+');
+
+                if (!isOpen) {
+                    panel.classList.add('open');
+                    button.querySelector('.icon').textContent = '-';
+                }
+            });
+        });
+
+        function openFaqItem(key) {
+            if (!key) return;
+            const item = document.querySelector(`.accordion-item[data-faq-key="${key}"]`);
+            if (!item) return;
+            const button = item.querySelector('.accordion-button');
+            const panel = item.querySelector('.accordion-panel');
+            const isOpen = panel.classList.contains('open');
+
+            document.querySelectorAll('.accordion-panel').forEach(panel => panel.classList.remove('open'));
+            document.querySelectorAll('.accordion-button .icon').forEach(icon => icon.textContent = '+');
+
+            if (!isOpen) {
+                panel.classList.add('open');
+                button.querySelector('.icon').textContent = '-';
+                item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const openTarget = urlParams.get('open') || window.location.hash.replace('#', '');
+        if (openTarget) {
+            openFaqItem(openTarget);
+        }
+    </script>
+</body>
+</html>

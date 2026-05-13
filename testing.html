@@ -1,0 +1,249 @@
+ <script>
+
+        // --- 1. GLOBAL STATE & UTILITIES ---
+        let selectedColor = "";
+        let selectedSize = "";
+        let quantity = 1;
+        let currentItem = null; // To store the fetched item data globally
+
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            if (!container) return; // Guard clause if container is missing
+
+            const toast = document.createElement('div');
+            toast.className = `toast-item shadow-sm p-3 mb-2 rounded`;
+            toast.style.minWidth = "250px";
+            toast.style.color = "white";
+            toast.style.background = type === "success" ? "#28a745" : "#dc3545";
+            toast.style.transition = "opacity 0.5s ease";
+            
+            toast.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>${message}</span>
+                    <button type="button" class="ml-2 mb-1 close text-white" style="outline:none; border:none; background:none;">&times;</button>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(() => { 
+                toast.style.opacity = "0"; 
+                setTimeout(() => toast.remove(), 500); 
+            }, 3000);
+        }
+
+        // --- 2. MAIN EXECUTION ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const itemId = urlParams.get('id');
+
+            if (!itemId) {
+                alert("No item selected!");
+                window.location.href = 'store.html';
+                return;
+            }
+
+            let type = "product";
+
+            try {
+                // ===== FETCH DATA =====
+                let response = await fetch(`http://localhost:3000/api/products/${itemId}`);
+
+                if (response.ok) {
+                    currentItem = await response.json();
+                    type = "product";
+                } else {
+                    response = await fetch(`http://localhost:3000/api/featured/${itemId}`);
+                    if (!response.ok) throw new Error("Item not found");
+                    currentItem = await response.json();
+                    type = "feature";
+                }
+
+                // ===== UPDATE UI =====
+                document.title = `Retro Rack | ${currentItem.name}`;
+                document.getElementById('displayName').innerText = currentItem.name;
+                document.getElementById('displayDescription').innerText = currentItem.description || 'No description';
+                document.getElementById('displayPrice').innerText = `Ksh. ${Number(currentItem.price).toLocaleString()}`;
+
+                const categoryText = Array.isArray(currentItem.category) 
+                    ? currentItem.category.join(', ') 
+                    : currentItem.category;
+
+                document.getElementById('breadcrumbCat').innerText = categoryText;
+                document.getElementById('displayCategory').innerText = categoryText;
+                document.getElementById('displaySKU').innerText = currentItem.sku || 'N/A';
+                document.getElementById('displayReviewCount').innerText = `(${currentItem.reviews || 0} Reviews)`;
+                document.getElementById('ReviewCount').innerText = `(${currentItem.reviews || 0} Reviews)`;
+                document.getElementById('Ratings').innerText = currentItem.rating || '5.0';
+
+                // IMAGES
+                if (currentItem.images && currentItem.images.length > 0) {
+                    const mainImg = document.getElementById('mainProductImage');
+                    mainImg.src = `http://localhost:3000/uploads/products/${currentItem.images[0]}`;
+
+                    const thumbContainer = document.querySelector('.thumbs');
+                    thumbContainer.innerHTML = currentItem.images.map(img => `
+                        <img src="http://localhost:3000/uploads/products/${img}"
+                            class="img-fluid custom-rounded mr-2" 
+                            style="width:70px; cursor:pointer; border: 1px solid #ddd;"
+                            onclick="document.getElementById('mainProductImage').src = this.src">
+                    `).join('');
+                }
+
+                // PRODUCT-ONLY FEATURES
+                // ===== COLORS (works for BOTH product & featured)
+                const colorContainer = document.getElementById('displayColors');
+                colorContainer.innerHTML = (currentItem.colors || []).map(color => `
+                    <span class="color mr-2" 
+                        style="background:${color.toLowerCase()}; border:1px solid #ddd; width:25px; height:25px; display:inline-block; border-radius:50%; cursor:pointer;" 
+                        title="${color}">
+                    </span>
+                `).join('') || '<span style="color:#888;">No colors available</span>';
+
+
+                // ===== SIZES (works for BOTH product & featured)
+                const sizeContainer = document.getElementById('displaySizes');
+                sizeContainer.innerHTML = (currentItem.sizes || []).map(size => `
+                    <button class="btn btn-outline-secondary btn-sm mr-2">${size}</button>
+                `).join('') || '<span style="color:#888;">No sizes available</span>';
+
+
+                // ===== RATINGS (fix for "4 Star")
+                let starCount = 5;
+
+                if (typeof currentItem.rating === 'string') {
+                    starCount = parseInt(currentItem.rating); // "4 Star" → 4
+                } else {
+                    starCount = parseInt(currentItem.rating) || 5;
+                }
+
+                document.getElementById('displayRatingStars').innerHTML =
+                    '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+
+
+                // ===== FEATURE LABEL
+                if (type === "feature") {
+                    document.getElementById('displayName').innerHTML += 
+                        ' <span style="color:orange; font-size:14px;">(Featured)</span>';
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                document.body.innerHTML = "<div class='container text-center mt-5'><h2>Item not found</h2><a href='store.html'>Back to Store</a></div>";
+                return;
+            }
+
+            // --- 3. ATTACH LISTENERS (After UI is built) ---
+
+            // Quantity
+            document.getElementById('increaseQty')?.addEventListener('click', () => {
+                quantity++;
+                document.getElementById('qtyDisplay').innerText = quantity;
+            });
+
+            document.getElementById('decreaseQty')?.addEventListener('click', () => {
+                if (quantity > 1) {
+                    quantity--;
+                    document.getElementById('qtyDisplay').innerText = quantity;
+                }
+            });
+
+            // Color Selection
+            document.getElementById('displayColors')?.addEventListener('click', (e) => {
+                if (e.target.classList.contains('color')) {
+                    document.querySelectorAll('.color').forEach(c => c.style.boxShadow = "none");
+                    e.target.style.boxShadow = "0 0 0 2px white, 0 0 0 4px #ff5722"; // Better highlight
+                    selectedColor = e.target.title;
+                }
+            });
+
+            // Size Selection
+            document.getElementById('displaySizes')?.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#displaySizes button').forEach(b => {
+                        b.classList.replace('btn-dark', 'btn-outline-secondary');
+                    });
+                    e.target.classList.replace('btn-outline-secondary', 'btn-dark');
+                    selectedSize = e.target.innerText;
+                }
+            });
+
+            // Add to Cart
+            document.getElementById('addToCartBtn')?.addEventListener('click', async () => {
+                if (!selectedColor || !selectedSize) {
+                    showToast("Please select color and size first!", "error");
+                    return;
+                }
+
+                const token = localStorage.getItem('token');
+                const itemData = {
+                    itemId: itemId,          // ✅ MUST exist
+                    itemType: type,    // Distinguish between product and feature
+                    name: currentItem.name,
+                    price: currentItem.price,
+                    image: currentItem.images[0],
+                    color: selectedColor,
+                    size: selectedSize,
+                    qty: quantity
+                };
+
+                if (token) {
+                    try {
+                        const res = await fetch('http://localhost:3000/api/sync-cart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(itemData)
+                        });
+                        if (res.ok) showToast("Cart synced to your account! 🛒");
+                    } catch (err) {
+                        showToast("Sync failed, saved locally", "error");
+                    }
+                } else {
+                    const cart = JSON.parse(localStorage.getItem('cart') || "[]");
+                    cart.push(itemData);
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    showToast("Added to guest cart! 🛒");
+                }
+            });
+
+            // Wishlist
+            document.getElementById('wishlistBtn')?.addEventListener('click', async function() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showToast("Please login to save wishlist", "error");
+                    return;
+                }
+                try {
+                    const res = await fetch('http://localhost:3000/api/sync-wishlist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ 
+                          itemId: itemId,
+                          itemType: type 
+                        })
+                    });
+                    if (res.ok) {
+                        this.querySelector('i').className = 'fas fa-heart'; // Solid heart
+                        this.style.color = "#ff5722";
+                        showToast("Saved to your profile! ❤️");
+                    }
+                } catch (err) {
+                    showToast("Could not sync wishlist", "error");
+                }
+            });
+
+            // Buy Now
+            document.getElementById('buyNowBtn')?.addEventListener('click', () => {
+                if (!selectedColor || !selectedSize) {
+                    showToast("Selection required for Checkout", "error");
+                    return;
+                }
+                window.location.href = `checkout.html?id=${itemId}&qty=${quantity}&size=${selectedSize}&color=${selectedColor}`;
+            });
+        });
+    </script>

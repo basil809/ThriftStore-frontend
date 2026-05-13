@@ -52,7 +52,7 @@ body{
     display: none;
 }
 
-.search-box {
+.search-bar {
   flex: 1;
   padding: 8px;
   border-radius: 20px;
@@ -183,7 +183,7 @@ body{
 
     .top-bar .search-box{
         width: 100%;
-        border: 1px solid #ff5722;
+        border: none;
         
     }
     .top-bar .icons {
