@@ -331,131 +331,131 @@
         </script>
         <script>
            document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem("token");
+                const token = localStorage.getItem("token");
 
-    if (!token) {
-        alert("Please login first");
-        window.location.href = "index.html";
-        return;
-    }
+                if (!token) {
+                    alert("Please login first");
+                    window.location.href = "index.html";
+                    return;
+                }
 
-    try {
-        const res = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/my-data", {
-            headers: { "Authorization": `Bearer ${token}` }
-        });
+                try {
+                    const res = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/my-data", {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
 
-        const data = await res.json();
-        if (!data.success) throw new Error("Not authorized");
+                    const data = await res.json();
+                    if (!data.success) throw new Error("Not authorized");
 
-        const cartItems = data.cart;
-        const user = data.user || {};
+                    const cartItems = data.cart;
+                    const user = data.user || {};
 
-        // ===== POPULATE USER =====
-        document.getElementById('firstName').value = user.firstName || '';
-        document.getElementById('lastName').value = user.lastName || '';
-        document.getElementById('phone').value = user.phone || '';
-        document.getElementById('email').value = user.email || '';
-        document.getElementById('country').value = user.country || '';
-        document.getElementById('city').value = user.city || '';
-        document.getElementById('state').value = user.state || '';
-        document.getElementById('streetAddress').value = user.streetAddress || '';
-        document.getElementById('zipCode').value = user.zipCode || '';
+                    // ===== POPULATE USER =====
+                    document.getElementById('firstName').value = user.firstName || '';
+                    document.getElementById('lastName').value = user.lastName || '';
+                    document.getElementById('phone').value = user.phone || '';
+                    document.getElementById('email').value = user.email || '';
+                    document.getElementById('country').value = user.country || '';
+                    document.getElementById('city').value = user.city || '';
+                    document.getElementById('state').value = user.state || '';
+                    document.getElementById('streetAddress').value = user.streetAddress || '';
+                    document.getElementById('zipCode').value = user.zipCode || '';
 
-        // ===== CALCULATE TOTAL =====
-        let subtotal = 0;
-        let itemCount = 0;
+                    // ===== CALCULATE TOTAL =====
+                    let subtotal = 0;
+                    let itemCount = 0;
 
-        if (cartItems?.length > 0) {
-            cartItems.forEach(item => {
-                const product = item.itemData;
-                if (!product) return;
+                    if (cartItems?.length > 0) {
+                        cartItems.forEach(item => {
+                            const product = item.itemData;
+                            if (!product) return;
 
-                // 🔥 FIX: SAFE PRICE
-                const price = Number(product.price ?? product.newPrice ?? 0);
+                            // 🔥 FIX: SAFE PRICE
+                            const price = Number(product.price ?? product.newPrice ?? 0);
 
-                subtotal += price * item.qty;
-                itemCount += item.qty;
+                            subtotal += price * item.qty;
+                            itemCount += item.qty;
+                        });
+                    }
+
+                    const shipping = subtotal > 0 ? 250 : 0;
+                    const total = subtotal + shipping;
+
+                    document.getElementById('summary-item-count').innerText = itemCount;
+                    document.getElementById('summary-subtotal').innerText = `Ksh. ${subtotal.toLocaleString()}`;
+                    document.getElementById('summary-shipping').innerText = `Ksh. ${shipping.toLocaleString()}`;
+                    document.getElementById('summary-total').innerText = `Ksh. ${total.toLocaleString()}`;
+
+                } catch (error) {
+                    console.error("Error updating checkout page:", error);
+                }
             });
-        }
 
-        const shipping = subtotal > 0 ? 250 : 0;
-        const total = subtotal + shipping;
+            document.getElementById('finalSubmit').onclick = async () => {
+                const token = localStorage.getItem('token');
+                const billing = JSON.parse(localStorage.getItem('billingDetails'));
 
-        document.getElementById('summary-item-count').innerText = itemCount;
-        document.getElementById('summary-subtotal').innerText = `Ksh. ${subtotal.toLocaleString()}`;
-        document.getElementById('summary-shipping').innerText = `Ksh. ${shipping.toLocaleString()}`;
-        document.getElementById('summary-total').innerText = `Ksh. ${total.toLocaleString()}`;
+                try {
+                    const userRes = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/my-data", {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
 
-    } catch (error) {
-        console.error("Error updating checkout page:", error);
-    }
-});
+                    const userData = await userRes.json();
 
-document.getElementById('finalSubmit').onclick = async () => {
-    const token = localStorage.getItem('token');
-    const billing = JSON.parse(localStorage.getItem('billingDetails'));
+                    // 🔥 FIX: MAP ITEMS PROPERLY
+                    const orderItems = userData.cart.map(item => {
+                        const product = item.itemData;
 
-    try {
-        const userRes = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/my-data", {
-            headers: { "Authorization": `Bearer ${token}` }
-        });
+                        const price = Number(product.price ?? product.newPrice ?? 0);
+                        const image = product.images?.[0] || product.image || '';
 
-        const userData = await userRes.json();
+                        return {
+                            productId: item.itemId,
+                            name: product.name || product.productName,
+                            price: price,
+                            qty: item.qty,
+                            size: item.size,
+                            color: item.color,
+                            image: image
+                        };
+                    });
 
-        // 🔥 FIX: MAP ITEMS PROPERLY
-        const orderItems = userData.cart.map(item => {
-            const product = item.itemData;
+                    const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                    const shippingFee = subtotal > 0 ? 250 : 0;
+                    const totalAmount = subtotal + shippingFee;
 
-            const price = Number(product.price ?? product.newPrice ?? 0);
-            const image = product.images?.[0] || product.image || '';
+                    const orderData = {
+                        billingDetails: billing,
+                        items: orderItems,
+                        subtotal,
+                        shippingFee,
+                        totalAmount
+                    };
 
-            return {
-                productId: item.itemId,
-                name: product.name || product.productName,
-                price: price,
-                qty: item.qty,
-                size: item.size,
-                color: item.color,
-                image: image
+                    const res = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/orders/create", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    const result = await res.json();
+
+                    if (result.success) {
+                        localStorage.removeItem('billingDetails');
+                        localStorage.setItem('lastOrder', JSON.stringify(result.order));
+                        window.location.href = "order.html";
+                    } else {
+                        alert("Order failed: " + result.message);
+                    }
+
+                } catch (err) {
+                    console.error(err);
+                    alert("Server error while placing order.");
+                }
             };
-        });
-
-        const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-        const shippingFee = subtotal > 0 ? 250 : 0;
-        const totalAmount = subtotal + shippingFee;
-
-        const orderData = {
-            billingDetails: billing,
-            items: orderItems,
-            subtotal,
-            shippingFee,
-            totalAmount
-        };
-
-        const res = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/orders/create", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(orderData)
-        });
-
-        const result = await res.json();
-
-        if (result.success) {
-            localStorage.removeItem('billingDetails');
-            localStorage.setItem('lastOrder', JSON.stringify(result.order));
-            window.location.href = "order.html";
-        } else {
-            alert("Order failed: " + result.message);
-        }
-
-    } catch (err) {
-        console.error(err);
-        alert("Server error while placing order.");
-    }
-};
         </script>
         <script>
             document.getElementById('continueToPayment').addEventListener('click', function() {
@@ -487,7 +487,7 @@ document.getElementById('finalSubmit').onclick = async () => {
                         </div>
                         <div class="form-group">
                             <label>Amount</label>
-                            <input type="text" class="form-control" id="paymentAmount" value="${document.getElementById('summary-total').innerText.replace(/[^\d.]/g, '')}" readonly>
+                            <input type="text" class="form-control" id="paymentAmount" value="${document.getElementById('summary-total').innerText.replace(/\D/g, '')}" readonly>
                         </div>
                         <button class="btn btn-success w-100 mb-2" id="paycloudPayBtn">Send STK Push</button>
                         <small class="text-muted">This will trigger an M-Pesa prompt on your phone.</small>
