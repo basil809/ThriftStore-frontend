@@ -340,7 +340,7 @@
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/my-data", {
+        const res = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/my-data", {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
@@ -396,7 +396,7 @@ document.getElementById('finalSubmit').onclick = async () => {
     const billing = JSON.parse(localStorage.getItem('billingDetails'));
 
     try {
-        const userRes = await fetch("http://localhost:3000/api/my-data", {
+        const userRes = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/my-data", {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
@@ -432,7 +432,7 @@ document.getElementById('finalSubmit').onclick = async () => {
             totalAmount
         };
 
-        const res = await fetch("http://localhost:3000/api/orders/create", {
+        const res = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/orders/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -547,7 +547,7 @@ document.getElementById('finalSubmit').onclick = async () => {
                     this.innerText = 'Sending...';
 
                     try {
-                        const response = await fetch('http://localhost:3000/api/payments/paycloud/stk-push', {
+                        const response = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/payments/paycloud/stk-push', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -616,7 +616,7 @@ document.getElementById('finalSubmit').onclick = async () => {
                 }
 
                 try {
-                    const response = await fetch("http://localhost:3000/api/subscriptions/subscribe", {
+                    const response = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/subscriptions/subscribe", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email })

@@ -1803,7 +1803,7 @@
       }
 
       // Fetch product from backend
-      fetch(`http://localhost:3000/api/products/${productId}`)
+      fetch(`https://thriftstore-backend-0vkj.onrender.com/api/products/${productId}`)
         .then(res => res.json())
         .then(product => {
           console.log(product)
@@ -1858,8 +1858,8 @@
             if (!imageValue) return 'images/system_img/default.png';
             if (/^https?:\/\//i.test(imageValue)) return imageValue;
             if (imageValue.startsWith('/')) return imageValue;
-            if (imageValue.startsWith('uploads/')) return `http://localhost:3000/${imageValue}`;
-            return `http://localhost:3000/uploads/products/${imageValue}`;
+            if (imageValue.startsWith('uploads/')) return `https://thriftstore-backend-0vkj.onrender.com/${imageValue}`;
+            return `https://thriftstore-backend-0vkj.onrender.com/uploads/products/${imageValue}`;
         }
 
         // --- GLOBAL STATE ---
@@ -1897,19 +1897,19 @@
                 let response;
 
                 // ===== PRODUCT =====
-                response = await fetch(`http://localhost:3000/api/products/${itemId}`);
+                response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/products/${itemId}`);
                 if (response.ok) {
                     currentItem = await response.json();
                     itemType = "product";
                 } else {
                     // ===== FEATURED =====
-                    response = await fetch(`http://localhost:3000/api/featured/${itemId}`);
+                    response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/featured/${itemId}`);
                     if (response.ok) {
                         currentItem = await response.json();
                         itemType = "feature";
                     } else {
                         // ===== FLASH SALE =====
-                        response = await fetch(`http://localhost:3000/api/flash-sales/${itemId}`);
+                        response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/flash-sales/${itemId}`);
                         if (!response.ok) throw new Error("Item not found");
 
                         const data = await response.json();
@@ -2088,7 +2088,7 @@
                 }
 
                 try {
-                    const response = await fetch("http://localhost:3000/api/sync-cart", { // Changed URL
+                    const response = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/sync-cart", { // Changed URL
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -2119,7 +2119,7 @@
                 }
 
                 try {
-                    const response = await fetch("http://localhost:3000/api/sync-wishlist", { // Changed URL
+                    const response = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/sync-wishlist", { // Changed URL
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -2153,7 +2153,7 @@
 
                 // Strategy: Add to cart first, then redirect
                 try {
-                    const response = await fetch("http://localhost:3000/api/sync-cart", {
+                    const response = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/sync-cart", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",

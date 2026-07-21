@@ -1460,8 +1460,8 @@
                 if (!imageValue) return 'images/system_img/default.png';
                 if (/^https?:\/\//i.test(imageValue)) return imageValue;
                 if (imageValue.startsWith('/')) return imageValue;
-                if (imageValue.startsWith('uploads/')) return `http://localhost:3000/${imageValue}`;
-                return `http://localhost:3000/uploads/products/${imageValue}`;
+                if (imageValue.startsWith('uploads/')) return `https://thriftstore-backend-0vkj.onrender.com/${imageValue}`;
+                return `https://thriftstore-backend-0vkj.onrender.com/uploads/products/${imageValue}`;
             }
 
             // Hamburger Menu Toggle
@@ -1495,7 +1495,7 @@
 
             // ===== WISHLIST FUNCTIONALITY =====
             
-           const backendURL = "http://localhost:3000";
+           const backendURL = "https://thriftstore-backend-0vkj.onrender.com";
 
             async function fetchWishlist() {
                 const token = localStorage.getItem('token');
@@ -1595,7 +1595,7 @@
             // Function to remove a single item from the wishlist
             async function removeFromWishlist(itemId) {
                 const token = localStorage.getItem('token');
-                const backendURL = "http://localhost:3000";
+                const backendURL = "https://thriftstore-backend-0vkj.onrender.com";
 
                 // Optional: Add a confirmation dialog
                 if (!confirm("Remove this item from your wishlist?")) return;
@@ -1653,7 +1653,7 @@
                 if (!confirmClear) return;
 
                 const token = localStorage.getItem('token');
-                const backendURL = "http://localhost:3000";
+                const backendURL = "https://thriftstore-backend-0vkj.onrender.com";
 
                 try {
                     const response = await fetch(`${backendURL}/api/wishlist/clear`, {
@@ -1712,7 +1712,7 @@
                 }
 
                 try {
-                    const response = await fetch("http://localhost:3000/api/subscriptions/subscribe", {
+                    const response = await fetch("https://thriftstore-backend-0vkj.onrender.com/api/subscriptions/subscribe", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email })

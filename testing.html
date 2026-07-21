@@ -46,13 +46,13 @@
 
             try {
                 // ===== FETCH DATA =====
-                let response = await fetch(`http://localhost:3000/api/products/${itemId}`);
+                let response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/products/${itemId}`);
 
                 if (response.ok) {
                     currentItem = await response.json();
                     type = "product";
                 } else {
-                    response = await fetch(`http://localhost:3000/api/featured/${itemId}`);
+                    response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/featured/${itemId}`);
                     if (!response.ok) throw new Error("Item not found");
                     currentItem = await response.json();
                     type = "feature";
@@ -78,11 +78,11 @@
                 // IMAGES
                 if (currentItem.images && currentItem.images.length > 0) {
                     const mainImg = document.getElementById('mainProductImage');
-                    mainImg.src = `http://localhost:3000/uploads/products/${currentItem.images[0]}`;
+                    mainImg.src = `https://thriftstore-backend-0vkj.onrender.com/uploads/products/${currentItem.images[0]}`;
 
                     const thumbContainer = document.querySelector('.thumbs');
                     thumbContainer.innerHTML = currentItem.images.map(img => `
-                        <img src="http://localhost:3000/uploads/products/${img}"
+                        <img src="https://thriftstore-backend-0vkj.onrender.com/uploads/products/${img}"
                             class="img-fluid custom-rounded mr-2" 
                             style="width:70px; cursor:pointer; border: 1px solid #ddd;"
                             onclick="document.getElementById('mainProductImage').src = this.src">
@@ -188,7 +188,7 @@
 
                 if (token) {
                     try {
-                        const res = await fetch('http://localhost:3000/api/sync-cart', {
+                        const res = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/sync-cart', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -216,7 +216,7 @@
                     return;
                 }
                 try {
-                    const res = await fetch('http://localhost:3000/api/sync-wishlist', {
+                    const res = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/sync-wishlist', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

@@ -1548,7 +1548,7 @@
         const password = document.getElementById('password').value.trim();
 
         try {
-            const res = await fetch('http://localhost:3000/api/auth/admin-login', {
+            const res = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/auth/admin-login', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ username, password, adminType: currentAdmin })
@@ -1842,7 +1842,7 @@
 
         // --- 5. API CALL ---
         try {
-            let url = 'http://localhost:3000/api/products';
+            let url = 'https://thriftstore-backend-0vkj.onrender.com/api/products';
             let method = 'POST';
 
             if (window.editingProductId) {
@@ -1879,7 +1879,7 @@
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch('http://localhost:3000/api/products', {
+            const res = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/products', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -1955,7 +1955,7 @@
         if (!confirm('Are you sure you want to delete this product?')) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+            const res = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/products/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -1983,7 +1983,7 @@
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch(`http://localhost:3000/api/products/${productId}`, {
+            const res = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/products/${productId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -2037,7 +2037,7 @@
         };
 
         try {
-            const response = await fetch('http://localhost:3000/api/flash-sales/create', {
+            const response = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/flash-sales/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2068,7 +2068,7 @@
         const token = localStorage.getItem('token');
 
         try {
-            const res = await fetch('http://localhost:3000/api/flash-sales/all', {
+            const res = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/flash-sales/all', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -2114,7 +2114,7 @@
         if (!confirm('Are you sure you want to delete this flash sale?')) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/flash-sales/${id}`, {
+            const res = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/flash-sales/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -2136,7 +2136,7 @@
     // ====== LOAD CATEGORIES ======
     async function fetchCategories() {
         try {
-            const res = await fetch('http://localhost:3000/api/categories');
+            const res = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/categories');
             const data = await res.json();
 
             categories = data;
@@ -2242,7 +2242,7 @@
         const description = document.getElementById('categoryDescription').value;
 
         try {
-            const res = await fetch('http://localhost:3000/api/categories', {
+            const res = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/categories', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2286,7 +2286,7 @@
         if (!confirm('Are you sure you want to delete this category?')) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/categories/${id}`, {
+            const res = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/categories/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -2471,7 +2471,7 @@
         }
 
         try {
-            let url = 'http://localhost:3000/api/featured';
+            let url = 'https://thriftstore-backend-0vkj.onrender.com/api/featured';
             let method = 'POST';
 
             if (window.editingFeatureId) {
@@ -2503,7 +2503,7 @@
         const token = localStorage.getItem('token');
 
         try{
-            const res = await fetch('http://localhost:3000/api/featured', {
+            const res = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/featured', {
                 headers: { 'Authorization' : `Bearer ${token}` }
             });
 
@@ -2569,7 +2569,7 @@
         if (!confirm('Are you sure want to delete this Feature?')) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/featured/${id}`, {
+            const res = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/featured/${id}`, {
                 method: 'DELETE', 
                 headers: {
                     'Authorization' : `Bearer ${token}`
@@ -2594,7 +2594,7 @@
         const tableBody = document.querySelector("#ordersTable tbody");
         
         try {
-            const response = await fetch(`http://localhost:3000/api/orders/admin/all`, {
+            const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/orders/admin/all`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
             });
             const data = await response.json();
@@ -2645,7 +2645,7 @@
         const adminToken = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`http://localhost:3000/api/admin/count`, {
+            const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/admin/count`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
             });
             const data = await response.json();
@@ -2664,7 +2664,7 @@
         const adminToken = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`http://localhost:3000/api/subscriptions/admin/count`, {
+            const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/subscriptions/admin/count`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
             });
             const data = await response.json();
@@ -2683,7 +2683,7 @@
         const adminToken = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`http://localhost:3000/api/flash-sales/admin/flash-sale-count`, {
+            const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/flash-sales/admin/flash-sale-count`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
             });
             const data = await response.json();
@@ -2703,7 +2703,7 @@
         const adminToken = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`http://localhost:3000/api/categories/admin/categories-count`, {
+            const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/categories/admin/categories-count`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
             });
             const data = await response.json();
@@ -2722,7 +2722,7 @@
         const adminToken = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`http://localhost:3000/api/orders/admin/total-orders`, {
+            const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/orders/admin/total-orders`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
             });
             const data = await response.json();
@@ -2757,7 +2757,7 @@
         const adminToken = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`http://localhost:3000/api/orders/update-status/${id}`, {
+            const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/orders/update-status/${id}`, {
                 method: 'PUT',
                 headers: {
                     "Content-Type": "application/json",
@@ -2783,7 +2783,7 @@
     async function loadAnalytics() {
         const adminToken = localStorage.getItem('token');
         try {
-            const response = await fetch(`http://localhost:3000/api/orders/admin/analytics`, {
+            const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/orders/admin/analytics`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
             });
             const data = await response.json();
@@ -2870,7 +2870,7 @@
         const adminToken = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`http://localhost:3000/api/orders/admin/analytics`, {
+            const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/orders/admin/analytics`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
             });
             const data = await response.json();
@@ -2983,7 +2983,7 @@
                 return;
             }
 
-            const response = await fetch('http://localhost:3000/api/newsletters/send', {
+            const response = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/newsletters/send', {
                 method: 'POST',
                 headers: {
                     // Do NOT explicitly set 'Content-Type' when sending FormData; 

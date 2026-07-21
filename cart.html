@@ -1128,8 +1128,8 @@
                 if (!imageValue) return 'images/system_img/default.png';
                 if (/^https?:\/\//i.test(imageValue)) return imageValue;
                 if (imageValue.startsWith('/')) return imageValue;
-                if (imageValue.startsWith('uploads/')) return `http://localhost:3000/${imageValue}`;
-                return `http://localhost:3000/uploads/products/${imageValue}`;
+                if (imageValue.startsWith('uploads/')) return `https://thriftstore-backend-0vkj.onrender.com/${imageValue}`;
+                return `https://thriftstore-backend-0vkj.onrender.com/uploads/products/${imageValue}`;
             }
 
             AOS.init({
@@ -1210,7 +1210,7 @@
 
                     try {
                         // NOTE: Using your 'my-data' endpoint as per your snippet
-                        const response = await fetch('http://localhost:3000/api/my-data', {
+                        const response = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/my-data', {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
                         const data = await response.json();
@@ -1305,7 +1305,7 @@
                     const token = localStorage.getItem('token');
                     
                     try {
-                        const res = await fetch('http://localhost:3000/api/cart/update-quantity', {
+                        const res = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/cart/update-quantity', {
                             method: 'PUT',
                             headers: { 
                                 'Content-Type': 'application/json',
@@ -1335,7 +1335,7 @@
                     const token = localStorage.getItem('token');
 
                     try {
-                        const res = await fetch(`http://localhost:3000/api/cart/remove/${itemId}`, {
+                        const res = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/cart/remove/${itemId}`, {
                             method: 'DELETE',
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
@@ -1362,7 +1362,7 @@
                             if (!confirm("Are you sure you want to clear your entire cart?")) return;
                             const token = localStorage.getItem('token');
                             try {
-                                const res = await fetch(`http://localhost:3000/api/cart/clear`, {
+                                const res = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/cart/clear`, {
                                     method: 'DELETE',
                                     headers: { 'Authorization': `Bearer ${token}` }
                                 });
