@@ -1588,6 +1588,20 @@
         location.reload();
     });
 
+    function resolveImageUrl(imageValue) {
+        if (!imageValue) return 'images/system_img/default.png';
+
+        if (typeof imageValue === 'string' && imageValue.startsWith('http')) {
+            return imageValue;
+        }
+
+        if (typeof imageValue === 'string' && imageValue.startsWith('uploads/')) {
+            return `https://thriftstore-backend-0vkj.onrender.com/${imageValue}`;
+        }
+
+        return `https://thriftstore-backend-0vkj.onrender.com/uploads/products/${imageValue}`;
+    }
+
     // ====== NAVIGATION ======
     document.querySelectorAll('.menu-link').forEach(link => {
         link.addEventListener('click', function(e) {
