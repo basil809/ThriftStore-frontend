@@ -476,31 +476,49 @@ document.getElementById('finalSubmit').onclick = async () => {
                 // 2. Replace Form with Payment Instructions
                 const leftSide = document.getElementById('checkout-left-side');
                 leftSide.innerHTML = `
-                    <h3>Payment Instructions</h3>
-                    <p>Follow these steps to complete your purchase:</p>
-                    <ol class="payment-steps">
-                        <li>Open M-Pesa App / Sim Toolkit</li>
-                        <li>Go to <strong>Lipa na M-Pesa</strong></li>
-                        <li>Go to <strong>Buy Goods and Services</strong></li>
-                        <li>Paste Copied Till Number</li>
-                        <li>Enter Amount & Enter PIN</li>
-                    </ol>
+                    <h3>Choose Payment Method</h3>
+                    <p>Use the automatic M-Pesa STK push below. If it fails or you prefer not to use it, use the manual instructions instead.</p>
 
-                    <table class="table table-bordered mt-4">
-                        <thead class="thead-light">
-                            <tr><th>Merchant Name</th><th>Till Number</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>BASIL ONYANGO</td>
-                                <td id="tillNumber">3248567</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="card p-3 mb-3">
+                        <h5 class="mb-3">Automatic M-Pesa STK Push</h5>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text" class="form-control" id="paymentPhone" value="${(billingData.phone || '').replace(/^254/, '0')}" placeholder="0712345678">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="text" class="form-control" id="paymentAmount" value="${document.getElementById('summary-total').innerText.replace(/[^\d.]/g, '')}" readonly>
+                        </div>
+                        <button class="btn btn-success w-100 mb-2" id="paycloudPayBtn">Send STK Push</button>
+                        <small class="text-muted">This will trigger an M-Pesa prompt on your phone.</small>
+                    </div>
 
-                    <button class="btn btn-outline-primary btn-sm mb-4" onclick="copyTill()">
-                        <i class="fa fa-copy"></i> Copy Till Number
-                    </button>
+                    <div class="card p-3 mb-3">
+                        <h5 class="mb-3">Manual Payment Instructions</h5>
+                        <ol class="payment-steps">
+                            <li>Open M-Pesa App / Sim Toolkit</li>
+                            <li>Go to <strong>Lipa na M-Pesa</strong></li>
+                            <li>Go to <strong>Buy Goods and Services</strong></li>
+                            <li>Paste Copied Till Number</li>
+                            <li>Enter Amount & Enter PIN</li>
+                        </ol>
+
+                        <table class="table table-bordered mt-4">
+                            <thead class="thead-light">
+                                <tr><th>Merchant Name</th><th>Till Number</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>BASIL ONYANGO</td>
+                                    <td id="tillNumber">3248567</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <button class="btn btn-outline-primary btn-sm mb-4" onclick="copyTill()">
+                            <i class="fa fa-copy"></i> Copy Till Number
+                        </button>
+                    </div>
 
                     <div class="mt-4">
                         <button class="checkout-btn w-100" id="confirmPaymentBtn">Confirm Payment</button>
@@ -510,6 +528,53 @@ document.getElementById('finalSubmit').onclick = async () => {
                 // 3. Attach listener to the NEW button & Hide the original "Continue to Payment" button
                 document.getElementById('continueToPayment').style.display = 'none';
                 document.getElementById('confirmPaymentBtn').onclick = openConfirmModal;
+                document.getElementById('paycloudPayBtn').onclick = async function () {
+                    const phone = document.getElementById('paymentPhone').value;
+                    const amount = document.getElementById('paymentAmount').value;
+                    const token = localStorage.getItem('token');
+
+                    if (!token) {
+                        alert('Please login first');
+                        return;
+                    }
+
+                    if (!phone) {
+                        alert('Please enter your phone number');
+                        return;
+                    }
+
+                    this.disabled = true;
+                    this.innerText = 'Sending...';
+
+                    try {
+                        const response = await fetch('http://localhost:3000/api/payments/paycloud/stk-push', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                phone,
+                                amount,
+                                description: `Retro Rack order ${Date.now()}`
+                            })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            alert('STK push initiated. Please approve the payment prompt on your phone.');
+                        } else {
+                            alert(result.message || 'STK push failed. Please use the manual payment instructions instead.');
+                        }
+                    } catch (error) {
+                        console.error('PayCloud STK error:', error);
+                        alert('STK push could not be started. Please use the manual payment instructions instead.');
+                    } finally {
+                        this.disabled = false;
+                        this.innerText = 'Send STK Push';
+                    }
+                };
             });
 
             // Helper: Copy Function

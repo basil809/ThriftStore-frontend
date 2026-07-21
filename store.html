@@ -1163,7 +1163,7 @@
         <div class="footer-bottom">
             <div class="container footer-bottom-row">
             <p>Copyright © 2025 <span style="color:#ff5722;">Retro Rack - Thrift Store</span>. All rights reserved.</p>
-            <p>Web Design by <a href="#" style="color:#ff5722;">Baschelle5</a></p>
+            <p>Web Design by <a href="https://portfolio-swart-delta-f63zoke0po.vercel.app/" style="color:#ff5722;">Baschelle5</a></p>
             </div>
         </div>
 
@@ -1333,6 +1333,13 @@
             });
 
             const backendURL = "http://localhost:3000";
+            function resolveImageUrl(imageValue) {
+                if (!imageValue) return 'images/system_img/default.png';
+                if (/^https?:\/\//i.test(imageValue)) return imageValue;
+                if (imageValue.startsWith('/')) return imageValue;
+                if (imageValue.startsWith('uploads/')) return `${backendURL}/${imageValue}`;
+                return `${backendURL}/uploads/products/${imageValue}`;
+            }
             let allProducts = []; // Cache from backend
 
             // ===== FETCH PRODUCTS FROM BACKEND =====
@@ -1368,9 +1375,7 @@
                     const starCount = parseInt(product.rating) || 5;
 
                     // ✅ Safe image handling
-                    const imageUrl = product.images && product.images.length > 0
-                        ? `http://localhost:3000/uploads/products/${product.images[0]}`
-                        : 'default-image.png';
+                    const imageUrl = resolveImageUrl(product.images?.[0]);
 
                     // ✅ Safe price
                     const price = Number(product.price) || 0;
@@ -1545,7 +1550,7 @@
                 }
 
                 if (category === 'men') {
-                    updateTabs(['All', 'T-shirts', 'Shirts', 'Pants', 'Shoes', 'Jackets', 'Hoodies'], 'All', 'men');
+                    updateTabs(['All', 'T-shirts', 'Shirts', 'Jersey', 'Pants', 'Shoes', 'Jackets', 'Hoodies'], 'All', 'men');
                 } else if (category === 'women') {
                     updateTabs(['All', 'Shoes', 'Dress', 'Skirts', 'Minis', 'Pants', 'Jackets', 'Tops'], 'All', 'women');
                 } else if (category === 'accessories') {
@@ -1563,7 +1568,7 @@
                 let subItems = [];
 
                 if (category === 'men') {
-                    subItems = ['All', 'T-shirts', 'Shirts', 'Pants', 'Shoes', 'Jackets'];
+                    subItems = ['All', 'T-shirts', 'Shirts', 'Jersey','Pants', 'Shoes', 'Jackets'];
                 } else if (category === 'women') {
                     subItems = ['All', 'Shoes', 'Dress', 'Skirts', 'Minis', 'Pants', 'Jackets', 'Tops'];
                 } else if (category === 'accessories') {
@@ -1662,7 +1667,7 @@
 
                     card.innerHTML = `
                         <div class="image-container">
-                            <img src="http://localhost:3000/uploads/products/${item.images[0]}" alt="${item.productName}">
+                            <img src="${resolveImageUrl(item.images?.[0])}" alt="${item.productName}">
                             <div class="discount-badge">-${item.discountPercentage}%</div>
                         </div>
                         <div class="info">

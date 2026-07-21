@@ -1191,6 +1191,14 @@
         });
     </script>
     <script>
+        function resolveImageUrl(imageValue) {
+            if (!imageValue) return 'images/system_img/default.png';
+            if (/^https?:\/\//i.test(imageValue)) return imageValue;
+            if (imageValue.startsWith('/')) return imageValue;
+            if (imageValue.startsWith('uploads/')) return `http://localhost:3000/${imageValue}`;
+            return `http://localhost:3000/uploads/products/${imageValue}`;
+        }
+
         const headerSearchInput = document.querySelector('input[type="search"]');
         const mobileSearchInput = document.getElementById('searchInput');
 
@@ -1229,19 +1237,19 @@
         // Array of carousel items (background + text)
         const slides = [
            {
-            image: "images/nikes/pexels-mnzoutfits-1598505.jpg",
-            title: "Timeless",
-            text: "discover accessories that blend retro inspiration with modern everyday style"
+                image: "images/nikes/pexels-mnzoutfits-1598505.jpg",
+                title: "Timeless",
+                text: "discover accessories that blend retro inspiration with modern everyday style"
             },
             {
-            image: "images/nikes/pexels-craytive-1456705.jpg",
-            title: "Quality",
-            text: "crafted pieces designed for durability comfort and long lasting wear"
+                image: "images/nikes/pexels-craytive-1456705.jpg",
+                title: "Quality",
+                text: "crafted pieces designed for durability comfort and long lasting wear"
             },
             {
-            image: "images/nikes/pexels-mark-joey-balani-434394388-15298946.jpg",
-            title: "Perfect Fit",
-            text: "shop confidently with clear sizing guides made to help you choose right"
+                image: "images/nikes/pexels-mark-joey-balani-434394388-15298946.jpg",
+                title: "Perfect Fit",
+                text: "shop confidently with clear sizing guides made to help you choose right"
             },
         ];
 
@@ -1534,7 +1542,8 @@
 
                 // 2. Build HTML as a single string (Performance optimized)
                 const productCards = products.map(product => { 
-                const imgUrl = `http://localhost:3000/uploads/products/${product.images[0]}`;
+                const imagePath = Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '';
+                const imgUrl = resolveImageUrl(imagePath);
 
                 return `
                     <div class="card" onclick="goToProductDetails('${product._id}')">
@@ -1576,7 +1585,8 @@
 
                 const dealItem = data.deal;  // Extract the actual deal object
 
-                const imgUrl = `http://localhost:3000/uploads/products/${dealItem.images[0]}`;
+                const imagePath = Array.isArray(dealItem.images) && dealItem.images.length > 0 ? dealItem.images[0] : '';
+                const imgUrl = resolveImageUrl(imagePath);
 
                 // 2. Build HTML
                 const dealHTML = `
@@ -1619,7 +1629,8 @@
 
                 // 2. Build HTML as a single string (performance optimized)
                 const FeatureCards = features.map(feature => {
-                    const imgUrl = `http://localhost:3000/uploads/products/${feature.images[0]}`;
+                    const imagePath = Array.isArray(feature.images) && feature.images.length > 0 ? feature.images[0] : '';
+                    const imgUrl = resolveImageUrl(imagePath);
 
                     return `
                     <div class="card" onclick="goToProductDetails('${feature._id}')">
@@ -1664,7 +1675,8 @@
 
                 // 2. Build HTML
                 const BestSellingCards = products.map(product => {
-                    const imgUrl = `http://localhost:3000/uploads/products/${product.images[0]}`;
+                    const imagePath = Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : '';
+                    const imgUrl = resolveImageUrl(imagePath);
 
                     return `
                         <div class="card" onclick="goToProductDetails('${product._id}')">
@@ -1700,7 +1712,8 @@
 
                 // 2. Build HTML as a single string (performance optimized)
                 const trendingCards = latestFlashSales.map(latestFlashSale => {
-                    const imgUrl = `http://localhost:3000/uploads/products/${latestFlashSale.images[0]}`;
+                    const imagePath = Array.isArray(latestFlashSale.images) && latestFlashSale.images.length > 0 ? latestFlashSale.images[0] : '';
+                    const imgUrl = resolveImageUrl(imagePath);
 
                     return `
                     <div class="card flash-sale-card" onclick="goToProductDetails('${latestFlashSale._id}')">

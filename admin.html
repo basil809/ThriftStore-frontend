@@ -511,6 +511,34 @@
             background: #da190b;
         }
 
+        /* Newsletter Modal */
+        .newsletterModal{
+            position: fixed;
+            overflow-y: auto;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-items: center;
+            align-items: center;
+            padding: 20px;
+            padding-top: 100px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .newsletterModal .modal-content{
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s ease-out;
+        }
+
         /* Modal */
         .modal {
             display: none;
@@ -864,6 +892,7 @@
             <li><a href="#" class="menu-link" data-page="products"><i class='bx bxs-shopping-bags'></i> <span>Products</span></a></li>
             <li><a href="#" class="menu-link" data-page="categories"><i class='bx bxs-category'></i> <span>Categories</span></a></li>
             <li><a href="#" class="menu-link" data-page="orders"><i class='bx bxs-package'></i> <span>Orders</span></a></li>
+            <li><a href="#" class="menu-link" data-page="newsletter"><i class='bx bxs-envelope-open'></i> <span>Newsletter</span></a></li>
             <li><a href="#" class="menu-link" data-page="analytics"><i class="bx bx-pie-chart-alt"></i> <span>Analytics</span></a></li>
             <li><a href="#" class="menu-link" data-page="settings"><i class='bx bxs-cog'></i> <span>Settings</span></a></li>
         </ul>
@@ -901,20 +930,24 @@
 
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3>Total Products</h3>
-                        <div class="number" id="totalProducts">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Total Orders</h3>
-                        <div class="number" id="totalOrders">0</div>
-                    </div>
-                    <div class="stat-card">
                         <h3>Total Revenue</h3>
                         <div class="number" id="totalRevenue">Ksh. 0</div>
                     </div>
                     <div class="stat-card">
-                        <h3>Active Users</h3>
-                        <div class="number" id="activeUsers">0</div>
+                        <h3>Total Products</h3>
+                        <div class="number" id="totalProducts">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Categories</h3>
+                        <div class="number" id="totalCategories">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Flash Sales</h3>
+                        <div class="number" id="totalFlashSales">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Orders</h3>
+                        <div class="number" id="totalOrdersCount">0</div>
                     </div>
                     <div class="stat-card">
                         <h3>Pending Orders</h3>
@@ -923,6 +956,14 @@
                     <div class="stat-card">
                         <h3>Delivered Orders</h3>
                         <div class="number" id="deliveredOrders">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Users</h3>
+                        <div class="number" id="activeUsers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Subscribers</h3>
+                        <div class="number" id="totalSubscribers">0</div>
                     </div>
                 </div>
 
@@ -950,6 +991,7 @@
                     </table>
                 </div>
                 <br>
+
                 <!--Flash Sale Section -->
                 <div class="table-container">
                     <div class="table-header">
@@ -1148,12 +1190,20 @@
 
                 <div class="stats-grid">
                     <div class="stat-card">
+                        <h3>Total Revenue</h3>
+                        <div class="number" id="totalRevenue2">Ksh. 0</div>
+                    </div>
+                    <div class="stat-card">
                         <h3>Monthly Revenue</h3>
                         <div class="number" id="stat-revenue">Ksh. 0</div>
                     </div>
                     <div class="stat-card">
                         <h3>Total Customers</h3>
                         <div class="number" id="stat-customers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Orders (Pending)</h3>
+                        <div class="number" id="totalOrders">0</div>
                     </div>
                     <div class="stat-card">
                         <h3>Avg Order Value</h3>
@@ -1429,6 +1479,37 @@
     </div>
 </div>
 
+<!-- Newsletter Modal -->
+<!--Create News for the subscribers and send it via email-->
+<div class="dashboard-page" id="newsletterPage">
+    <div class="newsletterModal" id="newsletterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="color: #ff5722; ">Create Newsletter</h2>
+            </div>
+            <!--Hidden sender field-->
+            <input type="hidden" id="sender" name="sender" value="Admin">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Image</label>
+                    <input type="file" id="newsletterImage" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="newsletterSubject" placeholder="Enter newsletter subject">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="newsletterMessage" placeholder="Enter newsletter message" style="width: 100%; padding: 10px; border: 1px solid var(--card-border); border-radius: 5px; font-family: inherit; height: 150px;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-save" onclick="sendNewsletter()">Send Newsletter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // 🔐 Protect page on load
     const token = localStorage.getItem('token');
@@ -1625,7 +1706,7 @@
             let sizes = [];
             if (selectedCategory.includes('shoe')) {
                 sizes = shoeSizes;
-            } else if (['t-shirt', 'shirts', 'caps', 'belts', 'self-care', 'pants/trousers', 'sweatshirt', 'dress', 'hoodies', 'tops', 'minis', 'skirts', 'shorts'].some(c => selectedCategory.includes(c))) {
+            } else if (['t-shirt', 'shirts', 'caps', 'belts', 'self-care', 'pants/trousers', 'sweatshirt', 'dress', 'hoodies', 'tops', 'minis', 'skirts', 'shorts', 'jersey'].some(c => selectedCategory.includes(c))) {
                 sizes = clothingSizes;
             } else if (selectedCategory.includes('wigs/weaves')) {
                 sizes = wigSizes;
@@ -1813,7 +1894,7 @@
                 tbody.innerHTML = products.map(p => `
                     <tr>
                         <td>
-                            <img src="http://localhost:3000/uploads/products/${p.images[0]}" width="50" height="50">
+                            <img src="${resolveImageUrl(p.images?.[0])}" width="50" height="50">
                         </td>
                         <td>${p.name}</td>
                         <td>${p.category}</td>
@@ -2004,7 +2085,7 @@
                 tbody.innerHTML = flashData.flashSales.map(sale => `
                     <tr>
                         <td>
-                            <img src="http://localhost:3000/uploads/products/${sale.images[0]}" width="50" height="50"></td>
+                            <img src="${resolveImageUrl(sale.images?.[0])}" width="50" height="50"></td>
                         <td>${sale.productName}</td>
                         <td>Ksh.${sale.oldPrice.toLocaleString()}</td>
                         <td>Ksh.${sale.newPrice.toLocaleString()}</td>
@@ -2083,7 +2164,7 @@
             tbody.innerHTML = products.slice(-5).map(p => `
                 <tr>
                     <td>
-                        <img src="http://localhost:3000/uploads/products/${p.images[0]}" width="50" height="50">
+                        <img src="${resolveImageUrl(p.images?.[0])}" width="50" height="50">
                     </td>
                     <td>${p.name}</td>
                     <td>Ksh.${p.price.toLocaleString()}</td>
@@ -2248,6 +2329,8 @@
         const hasClothing = selectedCategories.some(cat =>
             cat.includes('shirt') ||
             cat.includes('t-shirt') ||
+            cat.includes('jersey') || 
+            cat.includes('shorts') ||
             cat.includes('cap') ||
             cat.includes('belt') ||
             cat.includes('pant') ||
@@ -2437,7 +2520,7 @@
                 tbody.innerHTML = Featured.map(f => `
                 <tr>
                     <td>
-                        <img src="http://localhost:3000/uploads/products/${f.images[0]}" width="50" height="50">
+                        <img src="${resolveImageUrl(f.images?.[0])}" width="50" height="50">
                     </td>
                     <td>${f.name}</td>
                     <td>${Array.isArray(f.category) ? f.category.join(', ') : f.category}</td>
@@ -2505,7 +2588,6 @@
     }
     
     // ====== UPDATE FEATURE CHECKBOXES ======
-
     // ======= FETCH ORDERS ======
     async function loadAdminOrders() {
         const adminToken = localStorage.getItem('token');
@@ -2577,6 +2659,64 @@
         }
     }
 
+    // ====== Total Subscribers ======
+    async function fetchSubscriberCount() {
+        const adminToken = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`http://localhost:3000/api/subscriptions/admin/count`, {
+                headers: { "Authorization": `Bearer ${adminToken}` }
+            });
+            const data = await response.json();
+            console.log('Subscriber Count Response:', data);
+
+            if (data.success) {
+                document.getElementById('totalSubscribers').textContent = data.SubscriberCount;
+            }
+        } catch (error) {
+            console.error("Error fetching subscriber count:", error);
+        }
+    }
+
+    // ====== Total Flash Sales ======
+    async function fetchFlashSaleCount() {
+        const adminToken = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`http://localhost:3000/api/flash-sales/admin/flash-sale-count`, {
+                headers: { "Authorization": `Bearer ${adminToken}` }
+            });
+            const data = await response.json();
+            console.log('Flash Sale Count Response:', data);
+
+            if (data.success) {
+                document.getElementById('totalFlashSales').textContent = data.flashSaleCount;
+            }
+        } catch (error) {
+            console.error("Error fetching flash sale count:", error);
+        }
+    }
+
+
+    // ====== Total Categories ======
+    async function fetchCategoryCount() {
+        const adminToken = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`http://localhost:3000/api/categories/admin/categories-count`, {
+                headers: { "Authorization": `Bearer ${adminToken}` }
+            });
+            const data = await response.json();
+            console.log('Category Count Response:', data);
+
+            if (data.success) {
+                document.getElementById('totalCategories').textContent = data.categoryCount;
+            }
+        } catch (error) {
+            console.error("Error fetching category count:", error);
+        }
+    }
+
     // ====== TOTAL NUMBER OF ORDERS/Delivered Orders/Pending Orders ======
     async function  fetchTotalOrders() {
         const adminToken = localStorage.getItem('token');
@@ -2588,7 +2728,7 @@
             const data = await response.json();
 
             if (data.success) {
-                document.getElementById('totalOrders').textContent = data.totalOrders;
+                document.getElementById('totalOrdersCount').textContent = data.totalOrders;
                 document.getElementById('deliveredOrders').textContent = data.deliveredOrders;
                 document.getElementById('pendingOrders').textContent = data.pendingOrders;
             }
@@ -2642,7 +2782,6 @@
 
     async function loadAnalytics() {
         const adminToken = localStorage.getItem('token');
-        
         try {
             const response = await fetch(`http://localhost:3000/api/orders/admin/analytics`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
@@ -2651,41 +2790,17 @@
 
             if (data.success) {
                 const stats = data.analytics;
-                
-                // Select the stat-card number divs
-                const cards = document.querySelectorAll('#analyticsPage .stat-card .number');
-                
-                // Update UI (Assuming cards are in order: Revenue, Customers, Avg, Conversion)
-                cards[0].innerText = `Ksh. ${Number(stats.monthlyRevenue).toLocaleString()}`;
-                cards[1].innerText = stats.totalCustomers;
-                cards[2].innerText = `Ksh. ${Number(stats.avgOrderValue).toLocaleString()}`;
-                cards[3].innerText = `${stats.conversionRate}%`;
-            }
-        } catch (error) {
-            console.error("Analytics Error:", error);
-        }
-    }
 
-    async function loadAnalytics() {
-        const adminToken = localStorage.getItem('token');
-        try {
-            const response = await fetch(`http://localhost:3000/api/orders/admin/analytics`, {
-                headers: { "Authorization": `Bearer ${adminToken}` }
-            });
-            const data = await response.json();
+                // Populate all stat cards explicitly
+                document.getElementById('totalRevenue2').innerText = `Ksh. ${Number(stats.totalRevenueAllTime || 0).toLocaleString()}`;
+                document.getElementById('stat-revenue').innerText = `Ksh. ${Number(stats.monthlyRevenue || 0).toLocaleString()}`;
+                document.getElementById('stat-customers').innerText = stats.totalCustomers || 0;
+                document.getElementById('totalOrders').innerText = `Ksh. ${Number(stats.totalOrdersKsh || 0).toLocaleString()}`;
+                document.getElementById('stat-avg-value').innerText = `Ksh. ${Number(stats.avgOrderValue || 0).toLocaleString()}`;
+                document.getElementById('stat-conversion').innerText = `${stats.conversionRate || '0.0'}%`;
 
-            if (data.success) {
-                const stats = data.analytics;
-                
-                // Update numeric cards
-                const cards = document.querySelectorAll('#analyticsPage .stat-card .number');
-                cards[0].innerText = `Ksh. ${Number(stats.monthlyRevenue).toLocaleString()}`;
-                cards[1].innerText = stats.totalCustomers;
-                cards[2].innerText = `Ksh. ${Number(stats.avgOrderValue).toLocaleString()}`;
-                cards[3].innerText = `${stats.conversionRate}%`;
-
-                // Call chart with real data
-                renderSalesChart(stats.chartData); 
+                // Render chart
+                renderSalesChart(stats.chartData || []);
             }
         } catch (error) {
             console.error("Analytics Error:", error);
@@ -2699,7 +2814,7 @@
         const ctx = canvas.getContext('2d');
 
         // Extract labels and amounts from the backend data
-        // dbData is like: [{_id: '2026-04-04', dailyTotal: 3749.99}]
+        
         const labels = dbData.map(item => {
             // Format date to something readable like "04 Apr"
             const d = new Date(item._id);
@@ -2762,22 +2877,24 @@
 
             if (data.success) {
                 const stats = data.analytics;
+                // 1. Update Total revenue (all-time)
+                const totalRev = stats.totalRevenueAllTime ?? stats.monthlyRevenue ?? 0;
+                document.getElementById('totalRevenue2').innerText = `Ksh. ${Number(totalRev).toLocaleString()}`;
 
-                // 1. Update Monthly Revenue
-                document.getElementById('stat-revenue').innerText = 
-                    `Ksh. ${Number(stats.monthlyRevenue || 0).toLocaleString()}`;
+                // 2. Update Monthly Revenue
+                document.getElementById('stat-revenue').innerText = `Ksh. ${Number(stats.monthlyRevenue || 0).toLocaleString()}`;
 
-                // 2. Update Total Customers
-                document.getElementById('stat-customers').innerText = 
-                    stats.totalCustomers || 0;
+                // 3. Update Total Customers
+                document.getElementById('stat-customers').innerText = stats.totalCustomers || 0;
 
-                // 3. Update Average Order Value
-                document.getElementById('stat-avg-value').innerText = 
-                    `Ksh. ${Number(stats.avgOrderValue || 0).toLocaleString()}`;
+                // 4. Update Total Orders (Ksh.)
+                document.getElementById('totalOrders').innerText = `Ksh. ${Number(stats.totalOrdersKsh || 0).toLocaleString()}`;
 
-                // 4. Update Conversion Rate
-                document.getElementById('stat-conversion').innerText = 
-                    `${stats.conversionRate || 0}%`;
+                // 5. Update Average Order Value
+                document.getElementById('stat-avg-value').innerText = `Ksh. ${Number(stats.avgOrderValue || 0).toLocaleString()}`;
+
+                // 6. Update Conversion Rate
+                document.getElementById('stat-conversion').innerText = `${stats.conversionRate || '0.0'}%`;
             }
         } catch (error) {
             console.error("Error loading dashboard stats:", error);
@@ -2792,6 +2909,9 @@
         fetchTotalOrders();
         fetchUserCount();
         populateColors();
+        fetchCategoryCount();
+        fetchFlashSaleCount();
+        fetchSubscriberCount()
         populateFeatureColors();
         loadAdminOrders();
         updateDashboardStats();
@@ -2833,5 +2953,64 @@
         });
     });
 </script>
+<script>
+    async function sendNewsletter() {
+        const subject = document.getElementById('newsletterSubject').value;
+        const message = document.getElementById('newsletterMessage').value;
+        const imageInput = document.getElementById('newsletterImage');
+        
+        if (!subject || !message) {
+            alert("Please fill in both the Subject and Message fields.");
+            return;
+        }
+
+        // Using FormData to allow file uploads along with text fields
+        const formData = new FormData();
+        formData.append('sender', sender);
+        formData.append('subject', subject);
+        formData.append('message', message);
+        
+        if (imageInput.files[0]) {
+            formData.append('image', imageInput.files[0]);
+        }
+
+            try {
+            // Retrieve JWT token stored from admin login sequence
+            const token = localStorage.getItem('token'); 
+
+            if (!token) {
+                alert('You are not authenticated. Please log in again.');
+                return;
+            }
+
+            const response = await fetch('http://localhost:3000/api/newsletters/send', {
+                method: 'POST',
+                headers: {
+                    // Do NOT explicitly set 'Content-Type' when sending FormData; 
+                    // the browser automatically flags it as multipart/form-data with boundaries.
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert(data.message);
+                // Clear fields and hide modal window
+                document.getElementById('newsletterSubject').value = '';
+                document.getElementById('newsletterMessage').value = '';
+                imageInput.value = '';
+                document.getElementById('sender').value = '';
+            } else {
+                alert("Error: " + data.message);
+            }
+        } catch (error) {
+            console.error("Request Failed", error);
+            alert("Failed to send newsletter. Check connection configurations.");
+        }
+    }
+</script>
+
 </body>
 </html>

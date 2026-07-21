@@ -79,6 +79,14 @@
     </div>
 
     <script>
+        function resolveImageUrl(imageValue) {
+            if (!imageValue) return 'images/system_img/default.png';
+            if (/^https?:\/\//i.test(imageValue)) return imageValue;
+            if (imageValue.startsWith('/')) return imageValue;
+            if (imageValue.startsWith('uploads/')) return `http://localhost:3000/${imageValue}`;
+            return `http://localhost:3000/uploads/products/${imageValue}`;
+        }
+
         const API = "http://localhost:3000/api";
         const token = localStorage.getItem("token");
 
@@ -133,7 +141,7 @@
             itemsList.innerHTML = order.items.map(item => `
                 <div class="item-row">
                     <div class="item-info">
-                        <img src="http://localhost:3000/uploads/products/${item.image}" class="item-img" alt="product">
+                        <img src="${resolveImageUrl(item.image)}" class="item-img" alt="product">
                         <div>
                             <h4>${item.name}</h4>
                             <small>Color: ${item.color} | Size: ${item.size}</small>

@@ -1124,6 +1124,14 @@
         </div>
         </footer>
         <script>
+            function resolveImageUrl(imageValue) {
+                if (!imageValue) return 'images/system_img/default.png';
+                if (/^https?:\/\//i.test(imageValue)) return imageValue;
+                if (imageValue.startsWith('/')) return imageValue;
+                if (imageValue.startsWith('uploads/')) return `http://localhost:3000/${imageValue}`;
+                return `http://localhost:3000/uploads/products/${imageValue}`;
+            }
+
             AOS.init({
                 duration: 1000, // animation duration in ms
                 once: true,     // animation happens only once on scroll
@@ -1244,7 +1252,7 @@
                                 <div class="product d-flex align-items-center">
                                     <button class="btn-remove-x" onclick="removeItem('${item._id}')">&times;</button>
                                     
-                                    <img src="http://localhost:3000/uploads/products/${image}" 
+                                    <img src="${resolveImageUrl(image)}" 
                                         alt="${product.name || product.productName}">
                                     
                                     <div>

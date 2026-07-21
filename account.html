@@ -2125,6 +2125,14 @@
          </footer>
         <script>
             // Configuration
+            function resolveImageUrl(imageValue) {
+                if (!imageValue) return 'images/system_img/default.png';
+                if (/^https?:\/\//i.test(imageValue)) return imageValue;
+                if (imageValue.startsWith('/')) return imageValue;
+                if (imageValue.startsWith('uploads/')) return `http://localhost:3000/${imageValue}`;
+                return `http://localhost:3000/uploads/products/${imageValue}`;
+            }
+
             const API = "http://localhost:3000/api";
             const token = localStorage.getItem("token");
 
@@ -2190,7 +2198,7 @@
                     setVal("add-postal", user.postalCode || "");
 
                     if (user.image) {
-                        document.getElementById("profileImage").src = `http://localhost:3000${user.image}`;
+                        document.getElementById("profileImage").src = resolveImageUrl(user.image);
                     }
                 } catch (err) {
                     console.error(err);

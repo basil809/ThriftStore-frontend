@@ -1456,6 +1456,14 @@
         </footer>
 
         <script>
+            function resolveImageUrl(imageValue) {
+                if (!imageValue) return 'images/system_img/default.png';
+                if (/^https?:\/\//i.test(imageValue)) return imageValue;
+                if (imageValue.startsWith('/')) return imageValue;
+                if (imageValue.startsWith('uploads/')) return `http://localhost:3000/${imageValue}`;
+                return `http://localhost:3000/uploads/products/${imageValue}`;
+            }
+
             // Hamburger Menu Toggle
             const hamburger = document.getElementById('hamburger');
             const mobileMenu = document.getElementById('mobileMenu');
@@ -1553,7 +1561,7 @@
 
                             <td class="product-col">
                                 <div class="product-info">
-                                    <img src="http://localhost:3000/uploads/products/${product.images?.[0]}" alt="${product.name}">
+                                    <img src="${resolveImageUrl(product.images?.[0])}" alt="${product.name}">
                                     <div class="product-details">
                                         <h5>${product.name || product.productName}</h5>
                                         <p class="product-sku">SKU: ${product.sku || 'N/A'}</p>
