@@ -1570,6 +1570,14 @@
             loadProducts();// ✅ load immediately
             loadFeature();
             loadFlashSales();
+            fetchTotalOrders();
+            fetchUserCount();
+            fetchCategoryCount();
+            fetchFlashSaleCount();
+            fetchSubscriberCount();
+            loadAdminOrders();
+            updateDashboardStats();
+            loadAnalytics();
         } catch (err) {
             alert(err.message);
         }
@@ -2591,6 +2599,8 @@
     // ======= FETCH ORDERS ======
     async function loadAdminOrders() {
         const adminToken = localStorage.getItem('token');
+        if (!adminToken) return;
+
         const tableBody = document.querySelector("#ordersTable tbody");
         
         try {
@@ -2643,6 +2653,7 @@
     // ====== LOAD USER COUNT ======
     async function fetchUserCount() {
         const adminToken = localStorage.getItem('token');
+        if (!adminToken) return;
         
         try {
             const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/admin/count`, {
@@ -2662,6 +2673,7 @@
     // ====== Total Subscribers ======
     async function fetchSubscriberCount() {
         const adminToken = localStorage.getItem('token');
+        if (!adminToken) return;
         
         try {
             const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/subscriptions/admin/count`, {
@@ -2681,6 +2693,7 @@
     // ====== Total Flash Sales ======
     async function fetchFlashSaleCount() {
         const adminToken = localStorage.getItem('token');
+        if (!adminToken) return;
         
         try {
             const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/flash-sales/admin/flash-sale-count`, {
@@ -2701,6 +2714,7 @@
     // ====== Total Categories ======
     async function fetchCategoryCount() {
         const adminToken = localStorage.getItem('token');
+        if (!adminToken) return;
         
         try {
             const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/categories/admin/categories-count`, {
@@ -2720,6 +2734,7 @@
     // ====== TOTAL NUMBER OF ORDERS/Delivered Orders/Pending Orders ======
     async function  fetchTotalOrders() {
         const adminToken = localStorage.getItem('token');
+        if (!adminToken) return;
         
         try {
             const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/orders/admin/total-orders`, {
@@ -2755,6 +2770,7 @@
     // Helper function to talk to the Backend
     async function updateOrderStatus(id, newStatus) {
         const adminToken = localStorage.getItem('token');
+        if (!adminToken) return;
         
         try {
             const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/orders/update-status/${id}`, {
@@ -2782,6 +2798,7 @@
 
     async function loadAnalytics() {
         const adminToken = localStorage.getItem('token');
+        if (!adminToken) return;
         try {
             const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/orders/admin/analytics`, {
                 headers: { "Authorization": `Bearer ${adminToken}` }
@@ -2868,6 +2885,7 @@
 
     async function updateDashboardStats() {
         const adminToken = localStorage.getItem('token');
+        if (!adminToken) return;
         
         try {
             const response = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/orders/admin/analytics`, {
@@ -2903,6 +2921,12 @@
 
     // ====== INIT ======
     window.onload = () => {
+        if (!token) {
+            document.getElementById('dashboardContainer').classList.remove('active');
+            document.getElementById('loginContainer').style.display = 'flex';
+            return;
+        }
+
         updateCategorySelect();
         fetchCategories();
         loadFlashSales();
@@ -2911,13 +2935,13 @@
         populateColors();
         fetchCategoryCount();
         fetchFlashSaleCount();
-        fetchSubscriberCount()
+        fetchSubscriberCount();
         populateFeatureColors();
         loadAdminOrders();
         updateDashboardStats();
         loadAnalytics();
-        if (token) loadProducts();
-        if (token) loadFeature();
+        loadProducts();
+        loadFeature();
 
         const productTypeSelect = document.getElementById('productType');
         if (productTypeSelect) {
