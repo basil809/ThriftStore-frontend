@@ -1930,6 +1930,9 @@
                 document.getElementById('displayDescription').innerText =
                     currentItem.description || 'No description';
 
+                document.getElementById('description').querySelector('.description').innerText =
+                    currentItem.description || 'No description';
+                    
                 // ===== PRICE =====
                 let priceHTML = "";
 
