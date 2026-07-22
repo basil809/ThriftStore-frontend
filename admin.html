@@ -1835,14 +1835,12 @@
 
         // --- 2. HANDLE SIZES OR TYPE ---
         const selectedCategory = document.getElementById('productCategory').value.toLowerCase();
-        let selectedSizes = [];
+        const selectedSizes = Array.from(document.querySelectorAll('input[name="selectedSizes"]:checked'))
+            .map(cb => cb.value);
         let selectedProductType = null;
 
         if (selectedCategory === 'self-care' || selectedCategory === 'accessories') {
             selectedProductType = document.getElementById('productType').value;
-        } else {
-            selectedSizes = Array.from(document.querySelectorAll('input[name="selectedSizes"]:checked'))
-                .map(cb => cb.value);
         }
 
         // --- 3. APPEND EVERYTHING TO FORMDATA ---
@@ -1960,11 +1958,16 @@
         // After setting category, populate sizes/types
         populateSizes();
 
+        const savedSizes = Array.isArray(product.sizes) ? product.sizes : [];
+        document.querySelectorAll('input[name="selectedSizes"]').forEach(checkbox => {
+            checkbox.checked = savedSizes.includes(checkbox.value);
+        });
+
         // If category is self-care or accessories, set productType
         const selectedCategory = product.category.toLowerCase();
         if (selectedCategory === 'self-care' || selectedCategory === 'accessories') {
-            if (product.sizes && product.sizes.length > 0) {
-                document.getElementById('productType').value = product.sizes[0];
+            if (product.productType) {
+                document.getElementById('productType').value = product.productType;
             }
         }
 
