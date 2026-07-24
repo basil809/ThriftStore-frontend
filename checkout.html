@@ -533,8 +533,9 @@
                 // 3. Attach listener to the NEW button & Hide the original "Continue to Payment" button
                 document.getElementById('continueToPayment').style.display = 'none';
                 document.getElementById('confirmPaymentBtn').onclick = openConfirmModal;
+                
                 document.getElementById('paycloudPayBtn').onclick = async function () {
-                    const phone = document.getElementById('paymentPhone').value;
+                    let phoneInput = document.getElementById('paymentPhone').value.trim();
                     const amount = document.getElementById('paymentAmount').value;
                     const token = localStorage.getItem('token');
 
@@ -543,8 +544,23 @@
                         return;
                     }
 
-                    if (!phone) {
+                    if (!phoneInput) {
                         alert('Please enter your phone number');
+                        return;
+                    }
+
+                    // --- Phone Number Normalization to 254XXXXXXXXX ---
+                    phoneInput = phoneInput.replace(/\s+/g, ''); // Remove spaces
+                    if (phoneInput.startsWith('0')) {
+                        phoneInput = '254' + phoneInput.substring(1);
+                    } else if (phoneInput.startsWith('+254')) {
+                        phoneInput = phoneInput.substring(1);
+                    } else if (!phoneInput.startsWith('254')) {
+                        phoneInput = '254' + phoneInput;
+                    }
+
+                    if (!/^254(7|1)\d{8}$/.test(phoneInput)) {
+                        alert('Please enter a valid Kenyan M-Pesa phone number (e.g. 0712345678 or 0700000000).');
                         return;
                     }
 
@@ -559,18 +575,18 @@
                                 'Authorization': `Bearer ${token}`
                             },
                             body: JSON.stringify({
-                                phone,
-                                amount,
+                                phone: phoneInput,
+                                amount: Number(amount),
                                 description: `Retro Rack order ${Date.now()}`
                             })
                         });
 
                         const result = await response.json();
 
-                        if (result.success) {
-                            alert('STK push initiated. Please approve the payment prompt on your phone.');
+                        if (response.ok && (result.success || result.status === 'success')) {
+                            alert('STK push initiated. Please check your phone and enter your M-Pesa PIN.');
                         } else {
-                            alert(result.message || 'STK push failed. Please use the manual payment instructions instead.');
+                            alert(result.message || result.error || 'STK push failed. Please use manual payment.');
                         }
                     } catch (error) {
                         console.error('PayCloud STK error:', error);
