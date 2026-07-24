@@ -170,6 +170,68 @@ body {
   margin-bottom: 20px;
 }
 
+@media (max-width: 900px) {
+  .checkout-container {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 0 15px;
+  }
+
+  .billing-form,
+  .order-summary {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .order-summary {
+    max-height: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .checkout-container {
+    gap: 15px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group input,
+  .form-group select,
+  .checkout-btn,
+  .newsletter-box input,
+  .newsletter-box button,
+  .btn-link {
+    font-size: 14px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .order-summary {
+    padding: 18px;
+  }
+
+  .card {
+    border-radius: 12px;
+  }
+}
+
+#showManualPaymentBtn {
+  color: #ff5722;
+  text-decoration: none;
+}
+
+#showManualPaymentBtn:hover {
+  text-decoration: underline;
+}
+
 .form-row{
   display: grid;
   grid-template-columns: 1fr 1fr;

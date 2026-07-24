@@ -484,7 +484,7 @@
                     <h3>Choose Payment Method</h3>
                     <p>Use the automatic M-Pesa STK push below. If it fails or you prefer not to use it, use the manual instructions instead.</p>
 
-                    <div class="card p-3 mb-3">
+                    <div class="card p-3 mb-3" id="autoPaymentCard">
                         <h5 class="mb-3">Automatic M-Pesa STK Push</h5>
                         <div class="form-group">
                             <label>Phone Number</label>
@@ -496,9 +496,10 @@
                         </div>
                         <button class="btn btn-success w-100 mb-2" id="paycloudPayBtn">Send STK Push</button>
                         <small class="text-muted">This will trigger an M-Pesa prompt on your phone.</small>
+                        <button class="btn btn-link p-0 mt-3" id="showManualPaymentBtn" type="button">Try other payment methods</button>
                     </div>
 
-                    <div class="card p-3 mb-3">
+                    <div class="card p-3 mb-3" id="manualPaymentCard" style="display:none;">
                         <h5 class="mb-3">Manual Payment Instructions</h5>
                         <ol class="payment-steps">
                             <li>Open M-Pesa App / Sim Toolkit</li>
@@ -549,6 +550,17 @@
                     const payable = shouldRound ? Math.round(num) : Math.round(num);
                     el.value = payable.toLocaleString('en-US');
                 })();
+
+                const showManualBtn = document.getElementById('showManualPaymentBtn');
+                const autoPaymentCard = document.getElementById('autoPaymentCard');
+                const manualPaymentCard = document.getElementById('manualPaymentCard');
+
+                if (showManualBtn && autoPaymentCard && manualPaymentCard) {
+                    showManualBtn.addEventListener('click', () => {
+                        autoPaymentCard.style.display = 'none';
+                        manualPaymentCard.style.display = 'block';
+                    });
+                }
 
                 document.getElementById('paycloudPayBtn').onclick = async function () {
                     let phoneInput = document.getElementById('paymentPhone').value.trim();
