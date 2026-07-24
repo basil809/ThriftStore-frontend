@@ -492,7 +492,7 @@
                         </div>
                         <div class="form-group">
                             <label>Amount</label>
-                            <input type="text" class="form-control" id="paymentAmount" value="${document.getElementById('summary-total').innerText.replace(/[^\d.]/g, '')}" readonly>
+                            <input type="text" class="form-control" id="paymentAmount" value="" readonly>
                         </div>
                         <button class="btn btn-success w-100 mb-2" id="paycloudPayBtn">Send STK Push</button>
                         <small class="text-muted">This will trigger an M-Pesa prompt on your phone.</small>
@@ -533,13 +533,21 @@
                 // 3. Attach listener to the NEW button & Hide the original "Continue to Payment" button
                 document.getElementById('continueToPayment').style.display = 'none';
                 document.getElementById('confirmPaymentBtn').onclick = openConfirmModal;
-                // Format displayed payment amount with commas and two decimals
+                // Compute payable amount from the summary total, round if decimals exist, and format for display
                 (function formatPaymentAmount(){
                     const el = document.getElementById('paymentAmount');
-                    if (!el) return;
-                    const raw = (el.value || '').replace(/,/g, '');
+                    const summaryEl = document.getElementById('summary-total');
+                    if (!el || !summaryEl) return;
+                    const summaryText = summaryEl.innerText || '';
+                    // Find numeric groups like 2,249.99 or 1649
+                    const matches = summaryText.match(/(\d[\d,]*(?:\.\d+)?)/g);
+                    const lastNum = matches ? matches[matches.length - 1] : '0';
+                    const raw = lastNum.replace(/,/g, '');
                     const num = Number(raw) || 0;
-                    el.value = num.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    // If original had decimal part, round to nearest integer for payment
+                    const shouldRound = /\./.test(lastNum);
+                    const payable = shouldRound ? Math.round(num) : Math.round(num);
+                    el.value = payable.toLocaleString('en-US');
                 })();
 
                 document.getElementById('paycloudPayBtn').onclick = async function () {
