@@ -45,6 +45,8 @@
 </head>
 <body>
 
+  <div id="toast-container" class="toast-container"></div>
+
   <!-- HEADER -->
   <header class="header">
     <div class="logo">
@@ -354,8 +356,8 @@
 
                     const cartItems = data.cart;
                     const user = data.user || {};
-
-                    // ===== POPULATE USER =====
+                window.checkoutCartItems = cartItems || [];
+                window.checkoutUserData = data;
                     document.getElementById('firstName').value = user.firstName || '';
                     document.getElementById('lastName').value = user.lastName || '';
                     document.getElementById('phone').value = user.phone || '';
@@ -507,6 +509,8 @@
                             <li>Go to <strong>Buy Goods and Services</strong></li>
                             <li>Paste Copied Till Number</li>
                             <li>Enter Amount & Enter PIN</li>
+                            <li>Click Confirm payment & Place Order</li>
+
                         </ol>
 
                         <table class="table table-bordered mt-4">
@@ -607,6 +611,7 @@
                     this.innerText = 'Sending...';
 
                     try {
+                        const orderPayload = buildOrderPayload();
                         const response = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/payments/paycloud/stk-push', {
                             method: 'POST',
                             headers: {
@@ -614,28 +619,137 @@
                                 'Authorization': `Bearer ${token}`
                             },
                             body: JSON.stringify({
+                                ...orderPayload,
                                 phone: phoneInput,
                                 amount: Number(amount),
-                                description: `Retro Rack order ${Date.now()}`
+                                description: `Retro Rack order payment`
                             })
                         });
 
                         const result = await response.json();
 
                         if (response.ok && (result.success || result.status === 'success')) {
-                            alert('STK push initiated. Please check your phone and enter your M-Pesa PIN.');
+                            showToast('STK push initiated. Please complete the M-Pesa prompt on your phone.', 'success');
+                            if (result.transactionId) {
+                                pollPaymentStatus(result.transactionId, token);
+                            }
                         } else {
-                            alert(result.message || result.error || 'STK push failed. Please use manual payment.');
+                            showToast(result.message || result.error || 'STK push failed. Please use manual payment.', 'error');
                         }
                     } catch (error) {
                         console.error('PayCloud STK error:', error);
-                        alert('STK push could not be started. Please use the manual payment instructions instead.');
+                        showToast('STK push could not be started. Please use the manual payment instructions instead.', 'error');
                     } finally {
                         this.disabled = false;
                         this.innerText = 'Send STK Push';
                     }
                 };
             });
+
+            function buildOrderPayload() {
+                const billing = JSON.parse(localStorage.getItem('billingDetails') || '{}');
+                const cartItems = window.checkoutCartItems || [];
+                const orderItems = cartItems.map(item => {
+                    const product = item.itemData || {};
+                    const price = Number(product.price ?? product.newPrice ?? 0);
+                    const image = product.images?.[0] || product.image || '';
+                    return {
+                        productId: item.itemId,
+                        name: product.name || product.productName || '',
+                        price,
+                        qty: item.qty,
+                        size: item.size,
+                        color: item.color,
+                        image
+                    };
+                });
+                const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                const shippingFee = subtotal > 0 ? 250 : 0;
+                const totalAmount = subtotal + shippingFee;
+                return {
+                    billingDetails: {
+                        firstName: billing.firstName || document.getElementById('firstName')?.value || '',
+                        lastName: billing.lastName || document.getElementById('lastName')?.value || '',
+                        phone: billing.phone || document.getElementById('phone')?.value || '',
+                        email: billing.email || document.getElementById('email')?.value || '',
+                        address: billing.address || document.getElementById('streetAddress')?.value || '',
+                        city: billing.city || document.getElementById('city')?.value || '',
+                        state: billing.state || document.getElementById('state')?.value || '',
+                        country: billing.country || document.getElementById('country')?.value || ''
+                    },
+                    items: orderItems,
+                    subtotal,
+                    shippingFee,
+                    totalAmount
+                };
+            }
+
+            async function pollPaymentStatus(transactionId, token) {
+                let attempts = 0;
+                const maxAttempts = 6;
+                const delayMs = 8000;
+
+                while (attempts < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, delayMs));
+                    attempts += 1;
+
+                    try {
+                        const statusResponse = await fetch(`https://thriftstore-backend-0vkj.onrender.com/api/payments/paycloud/status/${transactionId}`, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        const statusData = await statusResponse.json();
+
+                        if (!statusResponse.ok) {
+                            showToast(statusData.message || 'Unable to fetch payment status.', 'warning');
+                            continue;
+                        }
+
+                        if (statusData.paymentStatus === 'Paid') {
+                            showToast('Payment confirmed. Your order has been placed successfully.', 'success');
+                            localStorage.setItem('lastOrder', JSON.stringify(statusData.order || {}));
+                            window.location.href = 'order.html';
+                            return;
+                        }
+
+                        if (statusData.paymentStatus === 'Failed' || statusData.paymentStatus === 'Cancelled') {
+                            showToast('Payment failed or cancelled. Please try again or use manual payment.', 'error');
+                            return;
+                        }
+
+                        showToast(`Payment still pending (${statusData.paymentStatus}). Waiting for confirmation...`, 'info');
+                    } catch (err) {
+                        console.error('Payment status poll error:', err);
+                        showToast('Error checking payment status. Retrying...', 'warning');
+                    }
+                }
+
+                showToast('Still waiting for payment confirmation. Please keep your phone open and try again later.', 'info');
+            }
+
+            function showToast(message, type = 'success') {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+
+                const toast = document.createElement('div');
+                toast.className = `toast-item ${type}`;
+                toast.innerHTML = `
+                    <div class="toast-content">
+                        <span>${message}</span>
+                        <button type="button" class="toast-close">&times;</button>
+                    </div>
+                `;
+
+                const closeButton = toast.querySelector('.toast-close');
+                closeButton?.addEventListener('click', () => toast.remove());
+
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 500);
+                }, 4500);
+            }
 
             // Helper: Copy Function
             function copyTill() {
