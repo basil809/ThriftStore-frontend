@@ -524,6 +524,7 @@
                         <button class="btn btn-outline-primary btn-sm mb-4" onclick="copyTill()">
                             <i class="fa fa-copy"></i> Copy Till Number
                         </button>
+                        <button class="btn btn-link p-0 d-block mt-2" id="showStkPaymentBtn" type="button">Back to STK</button>
                     </div>
 
                     <div class="mt-4">
@@ -555,10 +556,18 @@
                 const autoPaymentCard = document.getElementById('autoPaymentCard');
                 const manualPaymentCard = document.getElementById('manualPaymentCard');
 
+                const showStkBtn = document.getElementById('showStkPaymentBtn');
                 if (showManualBtn && autoPaymentCard && manualPaymentCard) {
                     showManualBtn.addEventListener('click', () => {
                         autoPaymentCard.style.display = 'none';
                         manualPaymentCard.style.display = 'block';
+                    });
+                }
+
+                if (showStkBtn && autoPaymentCard && manualPaymentCard) {
+                    showStkBtn.addEventListener('click', () => {
+                        manualPaymentCard.style.display = 'none';
+                        autoPaymentCard.style.display = 'block';
                     });
                 }
 
