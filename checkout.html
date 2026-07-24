@@ -492,7 +492,7 @@
                         </div>
                         <div class="form-group">
                             <label>Amount</label>
-                            <input type="text" class="form-control" id="paymentAmount" value="${document.getElementById('summary-total').innerText.replace(/\D/g, '')}" readonly>
+                            <input type="text" class="form-control" id="paymentAmount" value="${document.getElementById('summary-total').innerText.replace(/[^\d.]/g, '')}" readonly>
                         </div>
                         <button class="btn btn-success w-100 mb-2" id="paycloudPayBtn">Send STK Push</button>
                         <small class="text-muted">This will trigger an M-Pesa prompt on your phone.</small>
@@ -533,10 +533,20 @@
                 // 3. Attach listener to the NEW button & Hide the original "Continue to Payment" button
                 document.getElementById('continueToPayment').style.display = 'none';
                 document.getElementById('confirmPaymentBtn').onclick = openConfirmModal;
-                
+                // Format displayed payment amount with commas and two decimals
+                (function formatPaymentAmount(){
+                    const el = document.getElementById('paymentAmount');
+                    if (!el) return;
+                    const raw = (el.value || '').replace(/,/g, '');
+                    const num = Number(raw) || 0;
+                    el.value = num.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                })();
+
                 document.getElementById('paycloudPayBtn').onclick = async function () {
                     let phoneInput = document.getElementById('paymentPhone').value.trim();
-                    const amount = document.getElementById('paymentAmount').value;
+                    // Parse displayed amount (may include commas) into numeric value
+                    const amountStr = document.getElementById('paymentAmount').value || '';
+                    const amount = Number(amountStr.replace(/,/g, ''));
                     const token = localStorage.getItem('token');
 
                     if (!token) {
