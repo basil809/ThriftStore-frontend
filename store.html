@@ -1355,7 +1355,11 @@
                     console.log("Fetched products:", data);
 
                     if (data.success) {
-                        allProducts = data.products;
+                        allProducts = (data.products || []).sort((a, b) => {
+                            const dateA = new Date(a.createdAt || 0).getTime();
+                            const dateB = new Date(b.createdAt || 0).getTime();
+                            return dateB - dateA;
+                        });
                         renderProducts(allProducts);
                     }
                 } catch (error) {
