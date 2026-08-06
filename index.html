@@ -551,7 +551,30 @@
             .form-group {
                 margin-bottom: 18px;
             }
-
+            /* advertisement modal */
+            .advertise-modal{
+                display: none;
+                position: fixed;
+                z-index: 10001;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease;
+            }
+            .advertise-modal-content{
+                background: white;
+                padding: 0;
+                border-radius: 12px;
+                width: 90%;
+                max-width: 450px;
+                box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+                animation: slideUp 0.3s ease;
+                position: relative;
+            }
             .form-row {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
@@ -1083,16 +1106,8 @@
             </div>
         </section>
 
-
-        <!-- Features Row -->
-        <div class="features-row" data-aos="fade-down">
-            <div class="feature"><i>🚚</i> Fast Worldwide Delivery - Within & Outside Kenya</div>
-            <div class="feature"><i>🛒</i> Easy Shopping & Checkout</div>
-            <div class="feature"><i>⏱</i> Delivery within 24Hrs for orders in Nairobi</div>
-        </div>
-
         <!--Advertise with Retro-Rack form-->
-        <section class="advertise" data-aos="fade-up">  
+        <section class="advertise" data-aos="fade-up" style="border-top: 1px solid #bbb;">  
             <h2 style="font-family: 'Brush Script MT', cursive; font-size: 40px; color: #ff5722;">Advertise with Retro-Rack</h2>
             <p style="font-weight: 900;">Reach a wider audience and boost your sales by advertising your products on our platform.
                 <span>FOR FREE</span>
@@ -1132,6 +1147,13 @@
                 </div>
             </div>
         </section>
+
+        <!-- Features Row -->
+        <div class="features-row" data-aos="fade-down">
+            <div class="feature"><i>🚚</i> Fast Worldwide Delivery - Within & Outside Kenya</div>
+            <div class="feature"><i>🛒</i> Easy Shopping & Checkout</div>
+            <div class="feature"><i>⏱</i> Delivery within 24Hrs for orders in Nairobi</div>
+        </div>
 
         <!-- Newsletter Section -->
         <section class="newsletter">
