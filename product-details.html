@@ -1657,14 +1657,15 @@
         
         <div class="mt-4 pt-3 border-top">
             <p><small><strong>SKU:</strong> <span id="displaySKU"></span></small></p>
-            <p><small><strong>Tags:</strong> Fashion, <span class="gender">Women</span>, <span class="catGo">Coat</span>, </small></p>
+            <p><small><strong>Tags:</strong> Retro-rack, <span class="gender">Shop</span>, <span class="catGo">Coat</span> </small></p>
             <!-- Social Share Icons placeholder -->
-            <p class="socials"><small><strong>Share:</strong></small>
-              <a href="#"><i class="fab fa-instagram"></i></a>
-              <a href="#"><i class="fab fa-facebook"></i></a>
-              <a href="#"><i class="fab fa-pinterest"></i></a>
-              <a href="#"><i class="fab fa-linkedin"></i></a>
-              <a href="#"><i class="fab fa-twitter"></i></a>
+            <p class="socials share-links"><small><strong>Share:</strong></small>
+              <a href="#" class="share-btn" data-platform="whatsapp" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+              <a href="#" class="share-btn" data-platform="twitter" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="share-btn" data-platform="facebook" title="Share on Facebook"><i class="fab fa-facebook"></i></a>
+              <a href="#" class="share-btn" data-platform="instagram" title="Share on Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="share-btn" data-platform="tiktok" title="Share on TikTok"><i class="fab fa-tiktok"></i></a>
+              <a href="#" class="share-btn" data-platform="copy" title="Copy product link"><i class="fas fa-link"></i></a>
             </p>
         </div>
         
@@ -1818,6 +1819,8 @@
             <span>Follow us:</span>
             <a href="https://www.instagram.com/retro_rack_thriftstore?igsh=OWx2Zno1cHNpNWpp"><i class="fab fa-instagram"></i></a>
             <a href="https://www.facebook.com/retroRackThriftStore"><i class="fab fa-facebook"></i></a>
+            <a href="https://whatsapp.com/channel/0029VarqBPQ7j6gDftMyLQ2h"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.tiktok.com/@retro_rack_thriftstore?_r=1&_t=ZS-98f3mvzHDft"><i class="fab fa-tiktok"></i></a>
         </div>
     </div>
     </div>
@@ -1983,6 +1986,81 @@
             container.appendChild(toast);
 
             setTimeout(() => toast.remove(), 3000);
+        }
+
+        async function copyTextToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('Product details copied to clipboard', 'success');
+            } catch (err) {
+                console.error('Clipboard failed', err);
+                showToast('Copy failed. Please copy manually.', 'error');
+            }
+        }
+
+        function buildSharePayload() {
+            const itemName = currentItem?.name || currentItem?.productName || 'Retro Rack product';
+            const itemPrice = itemType === 'flash'
+                ? `Ksh. ${Number(currentItem?.newPrice || 0).toLocaleString()} (was Ksh. ${Number(currentItem?.oldPrice || 0).toLocaleString()})`
+                : `Ksh. ${Number(currentItem?.price || 0).toLocaleString()}`;
+            const itemDescription = currentItem?.description || 'No description available.';
+            const productUrl = window.location.href;
+            const imageUrl = resolveImageUrl(currentItem?.images?.[0] || currentItem?.image || 'images/system_img/default.png');
+
+            const text = `${itemName}\nPrice: ${itemPrice}\n${itemDescription}\n${productUrl}`;
+            return { title: itemName, text, url: productUrl, imageUrl };
+        }
+
+        function buildPlatformShareUrl(platform, payload) {
+            const text = payload.text;
+            const url = payload.url;
+
+            switch (platform) {
+                case 'whatsapp':
+                    return `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+                case 'twitter':
+                    return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+                case 'facebook':
+                    return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+                default:
+                    return '';
+            }
+        }
+
+        async function shareProduct(platform) {
+            const payload = buildSharePayload();
+
+            if (platform === 'copy') {
+                await copyTextToClipboard(`${payload.text}`);
+                return;
+            }
+
+            if (platform === 'instagram' || platform === 'tiktok') {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: payload.title,
+                            text: payload.text,
+                            url: payload.url
+                        });
+                        return;
+                    } catch (err) {
+                        console.warn('Native share failed', err);
+                    }
+                }
+
+                await copyTextToClipboard(`${payload.text}`);
+                showToast(`Link copied. Paste it into ${platform} to share.`, 'success');
+                return;
+            }
+
+            const shareUrl = buildPlatformShareUrl(platform, payload);
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'noopener,noreferrer');
+            } else {
+                await copyTextToClipboard(`${payload.text}`);
+                showToast('Product details copied to clipboard', 'success');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -2279,6 +2357,14 @@
                     showToast("Process failed", "error");
                 }
             };
+
+            document.querySelectorAll('.share-btn').forEach(button => {
+                button.addEventListener('click', async event => {
+                    event.preventDefault();
+                    const platform = button.dataset.platform;
+                    await shareProduct(platform);
+                });
+            });
           });
     </script>
     <script>
