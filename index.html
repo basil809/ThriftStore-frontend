@@ -575,6 +575,35 @@
                 animation: slideUp 0.3s ease;
                 position: relative;
             }
+
+            .advertise-close-btn {
+                position: absolute;
+                right: 20px;
+                top: 20px;
+                background: none;
+                border: none;
+                font-size: 28px;
+                cursor: pointer;
+                color: #666;
+                z-index: 10;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            }
+
+            .advertise-close-btn:hover {
+                color: #ff5722;
+                transform: rotate(90deg);
+            }
+
+            .advertise-container {
+                padding: 40px;
+                z-index: 1000;
+            }
+
             .toast {
                 position: fixed;
                 bottom: 24px;
@@ -1079,7 +1108,7 @@
             </div>
         </div>
 
-    <!-- Features Row -->
+        <!-- Features Row -->
         <div class="features-row" data-aos="fade-up">
             <div class="feature"><i>🚚</i> Fast Worldwide Delivery - Within & Outside Kenya</div>
             <div class="feature"><i>🛒</i> Easy Shopping & Checkout</div>
@@ -1145,32 +1174,36 @@
         <!--Advertisement Form-->
         <!--Initially hide the form-->
         <div class="advertise-modal" id="advertiseModal">
-            < class="advertise-modal-content">
+            <div class="advertise-modal-content">
                 <button class="advertise-close-btn" id="advertiseCloseBtn" aria-label="Close advertise form">&times;</button>
-                <h2 style="text-align: center; color: #ff5722;">Advertise with Retro-Rack</h2>
-                <p style="text-align: center;">
-                    Fill out the form below to get started with advertising your products on our platform.
-                </p>
-                <form id="advertiseForm">
-                    <div class="form-group">
-                        <label for="name">Name:</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone:</label>
-                        <input type="tel" id="phone" name="phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message:</label>
-                        <textarea id="message" name="message" rows="4" required></textarea>
-                    </div>
-                    <button type="submit" class="btn-primary">Submit</button>
-                </form>
-                <div class="toast" id="toastMessage" aria-live="polite"></div>
+
+                <div class="advertise-container">
+                    <h2 style="text-align: center; color: #ff5722;">Advertise with Retro-Rack</h2>
+                    <p style="text-align: center;">
+                        Fill out the form below to get started with advertising your products on our platform.
+                    </p>
+                    <form id="advertiseForm">
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone:</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message:</label>
+                            <textarea id="message" name="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Submit</button>
+                    </form>
+                    <div class="toast" id="toastMessage" aria-live="polite"></div>
+                </div>
+                </div>
             </div>
         </div>
 
