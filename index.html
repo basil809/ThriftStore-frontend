@@ -606,11 +606,12 @@
 
             .toast {
                 position: fixed;
-                bottom: 24px;
-                left: 50%;
-                transform: translateX(-50%) translateY(40px);
-                min-width: 280px;
-                max-width: calc(100% - 40px);
+                top: 24px;
+                right: 24px;
+                left: auto;
+                transform: translateY(-40px);
+                min-width: 260px;
+                max-width: 320px;
                 padding: 14px 18px;
                 border-radius: 10px;
                 background: rgba(0, 0, 0, 0.88);
@@ -1201,7 +1202,6 @@
                         </div>
                         <button type="submit" class="btn-primary">Submit</button>
                     </form>
-                    <div class="toast" id="toastMessage" aria-live="polite"></div>
                 </div>
                 </div>
             </div>
