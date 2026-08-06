@@ -555,12 +555,12 @@
             .advertise-modal{
                 display: none;
                 position: fixed;
-                z-index: 10001;
+                z-index: 20000;
                 left: 0;
                 top: 0;
                 width: 100%;
                 height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
+                background-color: rgba(0, 0, 0, 0.65);
                 align-items: center;
                 justify-content: center;
                 animation: fadeIn 0.3s ease;
@@ -574,6 +574,34 @@
                 box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
                 animation: slideUp 0.3s ease;
                 position: relative;
+            }
+            .toast {
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%) translateY(40px);
+                min-width: 280px;
+                max-width: calc(100% - 40px);
+                padding: 14px 18px;
+                border-radius: 10px;
+                background: rgba(0, 0, 0, 0.88);
+                color: #fff;
+                font-size: 14px;
+                text-align: center;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.2s ease, transform 0.2s ease;
+                z-index: 30000;
+            }
+            .toast.show {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            .toast.success {
+                background: #1f7a30;
+            }
+            .toast.error {
+                background: #c0392b;
             }
             .form-row {
                 display: grid;
@@ -1116,9 +1144,9 @@
 
             <!--Advertisement Form-->
             <!--Initially hide the form-->
-            <div class="advertise-modal" id="advertiseModal" style="display: none;">
+            <div class="advertise-modal" id="advertiseModal">
                 <div class="advertise-modal-content">
-                    <span class="advertise-close-btn" id="advertiseCloseBtn">&times;</span>
+                    <button class="advertise-close-btn" id="advertiseCloseBtn" aria-label="Close advertise form">&times;</button>
                     <div class="advertise-container">
                         <h2 style="text-align: center; color: #ff5722;">Advertise with Retro-Rack</h2>
                         <p style="text-align: center;">
@@ -1144,6 +1172,7 @@
                         </div>
                         <button type="submit" class="btn-primary">Submit</button>
                     </form>
+                    <div class="toast" id="toastMessage" aria-live="polite"></div>
                 </div>
             </div>
         </section>
@@ -1457,6 +1486,7 @@
         const advertiseBtn = document.getElementById('advertiseBtn');
         const advertiseModal = document.getElementById('advertiseModal');
         const advertiseCloseBtn = document.getElementById('advertiseCloseBtn');
+        const advertiseForm = document.getElementById('advertiseForm');
 
         advertiseBtn.addEventListener('click', () => {
             advertiseModal.style.display = 'flex';
@@ -1464,6 +1494,64 @@
 
         advertiseCloseBtn.addEventListener('click', () => {
             advertiseModal.style.display = 'none';
+        });
+
+        advertiseModal.addEventListener('click', (event) => {
+            if (event.target === advertiseModal) {
+                advertiseModal.style.display = 'none';
+            }
+        });
+
+        const toastMessage = document.getElementById('toastMessage');
+        let toastTimer = null;
+
+        function showToast(message, type = 'success') {
+            if (!toastMessage) return;
+
+            toastMessage.textContent = message;
+            toastMessage.className = `toast show ${type}`;
+
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toastMessage.className = 'toast';
+            }, 3500);
+        }
+
+        advertiseForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const payload = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                message: document.getElementById('message').value.trim(),
+            };
+
+            if (!payload.name || !payload.email || !payload.phone || !payload.message) {
+                showToast('Please fill in all fields.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/advertisements/request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to submit advertisement request.');
+                }
+
+                showToast(data.message || 'Request submitted successfully.', 'success');
+                advertiseForm.reset();
+                advertiseModal.style.display = 'none';
+            } catch (error) {
+                console.error(error);
+                showToast(error.message || 'Unable to submit request.', 'error');
+            }
         });
     </script>
     <script>
