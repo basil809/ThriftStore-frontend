@@ -25,6 +25,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
         :root {
@@ -439,6 +440,25 @@
 
         .add-btn:hover {
             background: #e64a19;
+        }
+
+        .export-btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+            margin-right: 10px;
+        }
+
+        .export-btn:hover {
+            background: #1b5e20;
         }
 
         table {
@@ -1124,6 +1144,7 @@
                 <div class="table-container">
                     <div class="table-header">
                         <h2>All Products</h2>
+                        <button class="export-btn" id="exportProductsBtn"><i class='bx bx-export'></i> Export Products</button>
                         <button class="add-btn" id="addProductBtn"><i class='bx bx-plus'></i> Add Product</button>
                     </div>
                     <table id="productsTable">
@@ -2005,6 +2026,39 @@
     document.getElementById('addProductBtn').addEventListener('click', () => {
         openModal('productModal');
     });
+
+    function exportProductsToExcel() {
+        if (typeof XLSX === 'undefined') {
+            alert('Excel export library is unavailable.');
+            return;
+        }
+
+        if (!Array.isArray(products) || products.length === 0) {
+            alert('No products found to export.');
+            return;
+        }
+
+        const rows = products.map(product => ({
+            id: product._id || '',
+            title: product.name || '',
+            description: product.description || '',
+            price: Number(product.price || 0),
+            condition: 'new',
+            link: `https://retro-rack.store/product-details.html?id=${product._id || ''}`,
+            availability: Number(product.stock || 0) > 1 ? 'in_stock' : 'out_of_stock',
+            image_link: resolveImageUrl(product.images?.[0])
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(rows);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
+        XLSX.writeFile(workbook, 'retro-rack-products.xlsx');
+    }
+
+    const exportProductsBtn = document.getElementById('exportProductsBtn');
+    if (exportProductsBtn) {
+        exportProductsBtn.addEventListener('click', exportProductsToExcel);
+    }
 
     // ====== CATEGORIES ======
     document.getElementById('addCategoryBtn').addEventListener('click', () => {
