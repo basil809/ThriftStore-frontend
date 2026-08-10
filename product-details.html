@@ -1496,6 +1496,7 @@
   </style>
 </head>
 <body>
+<script id="product-schema" type="application/ld+json"></script>
 
 <!-- HEADER -->
 <header class="header">
@@ -1996,6 +1997,65 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
+        function injectProductSchema(data) {
+            const schemaScript = document.getElementById('product-schema');
+            if (!schemaScript) return;
+
+            const name = data.name || data.productName || 'Retro Rack Product';
+            const description = data.description || 'Retro Rack product';
+            const category = data.category || 'General';
+            const images = Array.isArray(data.images) && data.images.length > 0
+                ? data.images
+                : (data.image ? [data.image] : []);
+            const imageUrls = images.map(image => resolveImageUrl(image)).filter(Boolean);
+            const price = Number(data.price || data.newPrice || 0);
+            const currency = 'KES';
+            const availability = (data.inStock === false || data.stock === 0 || data.available === false)
+                ? 'https://schema.org/SoldOut'
+                : 'https://schema.org/InStock';
+            const condition = (data.condition || '').toLowerCase() === 'used'
+                ? 'https://schema.org/UsedCondition'
+                : 'https://schema.org/NewCondition';
+            const ratingValue = Number(data.rating || 5);
+            const reviewCount = Number(data.reviews || 0);
+
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "Product",
+                "name": name,
+                "description": description,
+                "image": imageUrls,
+                "sku": data.sku || data._id || name,
+                "brand": {
+                    "@type": "Brand",
+                    "name": "Retro Rack"
+                },
+                "category": category,
+                "offers": {
+                    "@type": "Offer",
+                    "url": window.location.href,
+                    "priceCurrency": currency,
+                    "price": price.toString(),
+                    "availability": availability,
+                    "itemCondition": condition,
+                    "seller": {
+                        "@type": "Organization",
+                        "name": "Retro Rack"
+                    }
+                }
+            };
+
+            if (reviewCount > 0 || ratingValue > 0) {
+                schema.aggregateRating = {
+                    "@type": "AggregateRating",
+                    "ratingValue": ratingValue,
+                    "reviewCount": reviewCount
+                };
+            }
+
+            schemaScript.textContent = JSON.stringify(schema, null, 2);
+        }
+
         async function copyTextToClipboard(text) {
             try {
                 await navigator.clipboard.writeText(text);
@@ -2148,6 +2208,8 @@
                 const category = currentItem.category || 'N/A';
                 document.getElementById('breadcrumbCat').innerText = category;
                 document.getElementById('displayCategory').innerText = category;
+
+                injectProductSchema(currentItem);
 
                 document.getElementById('displaySKU').innerText = currentItem.sku || 'N/A';
 
