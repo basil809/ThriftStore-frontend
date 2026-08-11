@@ -1423,6 +1423,108 @@
         object-fit: cover;
       }
 
+      .searchbar-section {
+        background: #fff;
+        padding: 0 0 20px;
+      }
+
+      .search-panel {
+        border: 1px solid #eee;
+        border-radius: 14px;
+        padding: 18px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+        background: linear-gradient(135deg, #fffaf7, #fff);
+      }
+
+      .search-label {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .search-input-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .search-input-row input {
+        flex: 1;
+        min-width: 220px;
+        padding: 12px 14px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+      }
+
+      .search-input-row button {
+        border: none;
+        padding: 12px 18px;
+        border-radius: 8px;
+        background: var(--orange);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .search-results {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-top: 14px;
+      }
+
+      .search-product-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 10px;
+        background: #fff;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .search-product-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      }
+
+      .search-product-card img {
+        width: 68px;
+        height: 68px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .search-product-info h4 {
+        margin: 0 0 4px;
+        font-size: 0.95rem;
+        color: #222;
+      }
+
+      .search-product-info p {
+        margin: 0;
+        font-size: 0.84rem;
+        color: #666;
+      }
+
+      .search-price {
+        color: var(--orange) !important;
+        font-weight: 700;
+      }
+
+      .search-empty {
+        padding: 12px;
+        border: 1px dashed #ddd;
+        border-radius: 8px;
+        color: #777;
+      }
+
       #scrollToTop {
         position: fixed;
         right: 24px;
@@ -1558,6 +1660,18 @@
     </nav>
   </div>
 </section>
+<section class="searchbar-section">
+  <div class="container">
+    <div class="search-panel">
+      <label class="search-label" for="searchInput">Search products</label>
+      <div class="search-input-row">
+        <input id="searchInput" type="text" placeholder="Search by product name, category or description" autocomplete="off">
+        <button id="searchBtn" type="button">Search</button>
+      </div>
+      <div id="searchResults" class="search-results"></div>
+    </div>
+  </div>
+</section>
 
 <button id="scrollToTop" type="button" aria-label="Scroll to top" title="Scroll to top">
   <i class="fa fa-arrow-up" aria-hidden="true"></i>
@@ -1612,10 +1726,8 @@
         <p><strong><span id="displayReviewCount"></span></strong></p>
 
         <div class="price mb-3">
-          <!-- Replaced fs-3 and fw-bold (B5) with B4 size classes -->
           <span id="displayPrice" class="current h3 font-weight-bold"></span>
-          <!-- Replaced ms-2 (B5) with mr-2 (B4 margin-right) -->
-          <span class="old text-decoration-line-through text-muted ml-2">$150.00</span> 
+          <span id="displayUsdPrice" class="old text-decoration-line-through text-muted ml-2"></span>
         </div>
 
         <p id="displayDescription" class="desc text-muted mb-4"></p>
@@ -1982,6 +2094,28 @@
         let currentItem = null;
         let itemType = "product";
 
+        function formatUsdCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        async function getKesToUsdRate() {
+            const fallbackRate = 0.0078;
+            try {
+                const response = await fetch('https://api.frankfurter.app/latest?from=KES&to=USD');
+                if (!response.ok) throw new Error('Exchange rate fetch failed');
+                const data = await response.json();
+                const rate = Number(data?.rates?.USD);
+                return Number.isFinite(rate) && rate > 0 ? rate : fallbackRate;
+            } catch (err) {
+                console.warn('Using fallback exchange rate for USD conversion', err);
+                return fallbackRate;
+            }
+        }
+
         function showToast(message, type = "success") {
             const container = document.getElementById('toast-container');
             if (!container) return;
@@ -2133,10 +2267,14 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             const itemId = new URLSearchParams(window.location.search).get('id');
+            const usdRate = await getKesToUsdRate();
 
             if (!itemId) {
-                alert("No item selected!");
-                window.location.href = 'store.html';
+                document.getElementById('displayName').textContent = 'Select a product to view details';
+                document.getElementById('displayDescription').textContent = 'Use the search bar above to browse products.';
+                document.getElementById('displayPrice').innerHTML = 'Ksh. 0';
+                document.getElementById('breadcrumbCat').textContent = 'Shop';
+                document.getElementById('displayCategory').textContent = 'Shop';
                 return;
             }
 
@@ -2181,28 +2319,25 @@
                     currentItem.description || 'No description';
 
                 // ===== PRICE =====
-                let priceHTML = "";
+                let priceValue = 0;
+                let oldPriceValue = 0;
+                let discountText = '';
 
                 if (itemType === "flash") {
-                    const newPrice = Number(currentItem.newPrice || 0);
-                    const oldPrice = Number(currentItem.oldPrice || 0);
+                    priceValue = Number(currentItem.newPrice || 0);
+                    oldPriceValue = Number(currentItem.oldPrice || 0);
                     const discount = currentItem.discountPercentage || 0;
-
-                    priceHTML = `
-                        Ksh. ${newPrice.toLocaleString()}
-                        <span style="text-decoration:line-through;color:#888;font-size:14px;">
-                            Ksh. ${oldPrice.toLocaleString()}
-                        </span>
-                        <span style="color:red;font-size:14px;">
-                            (${discount}% OFF)
-                        </span>
-                    `;
+                    discountText = `<span style="color:red;font-size:14px;">(${discount}% OFF)</span>`;
                 } else {
-                    const price = Number(currentItem.price || 0);
-                    priceHTML = `Ksh. ${price.toLocaleString()}`;
+                    priceValue = Number(currentItem.price || 0);
                 }
 
-                document.getElementById('displayPrice').innerHTML = priceHTML;
+                const convertedUsd = priceValue * usdRate;
+                document.getElementById('displayPrice').innerHTML = `
+                    <span>Ksh. ${priceValue.toLocaleString()}</span>
+                    ${discountText}
+                `;
+                document.getElementById('displayUsdPrice').innerText = `≈ ${formatUsdCurrency(convertedUsd)}`;
 
                 // ===== CATEGORY =====
                 const category = currentItem.category || 'N/A';
@@ -2436,6 +2571,88 @@
                 });
             });
           });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const searchBtn = document.getElementById('searchBtn');
+        let productCache = [];
+
+        function renderSearchResults(items) {
+          if (!searchResults) return;
+
+          if (!items.length) {
+            searchResults.innerHTML = '<div class="search-empty">No products found. Try another keyword.</div>';
+            return;
+          }
+
+          searchResults.innerHTML = items.map(product => `
+            <button class="search-product-card" data-id="${product._id || ''}">
+              <img src="${resolveImageUrl(product.images?.[0])}" alt="${product.name || 'Product'}">
+              <div class="search-product-info">
+                <h4>${product.name || 'Unnamed product'}</h4>
+                <p class="search-price">Ksh. ${Number(product.price || 0).toLocaleString()}</p>
+                <p>${product.reviews || 0} Reviews</p>
+                <p>${'★'.repeat(Math.max(1, Number(product.rating || 5)))}${'☆'.repeat(5 - Math.max(1, Number(product.rating || 5)))}</p>
+              </div>
+            </button>
+          `).join('');
+        }
+
+        async function searchProducts() {
+          const query = (searchInput?.value || '').trim().toLowerCase();
+          if (!query) {
+            renderSearchResults([]);
+            return;
+          }
+
+          if (!productCache.length) {
+            try {
+              const response = await fetch('https://thriftstore-backend-0vkj.onrender.com/api/products');
+              if (!response.ok) throw new Error('Unable to load products');
+              productCache = await response.json();
+            } catch (err) {
+              console.error(err);
+              renderSearchResults([]);
+              return;
+            }
+          }
+
+          const matches = productCache.filter(product => {
+            const haystack = `${product.name || ''} ${product.category || ''} ${product.description || ''}`.toLowerCase();
+            return haystack.includes(query);
+          }).slice(0, 8);
+
+          renderSearchResults(matches);
+        }
+
+        let searchTimer;
+        if (searchInput) {
+          searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(searchProducts, 250);
+          });
+        }
+
+        if (searchBtn) {
+          searchBtn.addEventListener('click', event => {
+            event.preventDefault();
+            searchProducts();
+          });
+        }
+
+        if (searchResults) {
+          searchResults.addEventListener('click', event => {
+            const card = event.target.closest('.search-product-card');
+            if (!card) return;
+            const productId = card.dataset.id;
+            if (productId) {
+              window.location.href = `product-details.html?id=${productId}`;
+            }
+          });
+        }
+      });
     </script>
     <script>
       // Hamburger Menu Toggle

@@ -2038,16 +2038,24 @@
             return;
         }
 
-        const rows = products.map(product => ({
-            id: product._id || '',
-            title: product.name || '',
-            description: product.description || '',
-            price: Number(product.price || 0),
-            condition: 'new',
-            link: `https://retro-rack.store/product-details.html?id=${product._id || ''}`,
-            availability: Number(product.stock || 0) > 1 ? 'in_stock' : 'out_of_stock',
-            image_link: resolveImageUrl(product.images?.[0])
-        }));
+        const rows = products.map(product => {
+            const rawPrice = Number(product.price || 0);
+            const formattedPrice = `KES ${rawPrice.toLocaleString('en-KE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`;
+
+            return {
+                id: product._id || '',
+                title: product.name || '',
+                description: product.description || '',
+                price: formattedPrice,
+                condition: 'new',
+                link: `https://retro-rack.store/product-details.html?id=${product._id || ''}`,
+                availability: Number(product.stock || 0) > 1 ? 'in_stock' : 'out_of_stock',
+                image_link: resolveImageUrl(product.images?.[0])
+            };
+        });
 
         const worksheet = XLSX.utils.json_to_sheet(rows);
         const workbook = XLSX.utils.book_new();
