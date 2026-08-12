@@ -434,9 +434,17 @@
             // 5. Expose minimal order data for Google review opt-in
             try {
                 const isoDelivery = deliveryDate.toISOString().slice(0,10); // YYYY-MM-DD
+                
+                // Try to get email from order data, then fall back to billingDetails from localStorage
+                let email = orderData.email || orderData.customerEmail || orderData.userEmail || '';
+                if (!email) {
+                    const billingDetails = JSON.parse(localStorage.getItem('billingDetails') || '{}');
+                    email = billingDetails.email || '';
+                }
+                
                 window.lastRenderedOrder = {
                     orderId: orderData.orderId || orderData._id || '',
-                    email: orderData.email || orderData.customerEmail || orderData.userEmail || '',
+                    email: email,
                     deliveryCountry: (orderData.shippingAddress && orderData.shippingAddress.countryCode) || orderData.deliveryCountry || 'KE',
                     estimatedDeliveryDateISO: isoDelivery,
                     products: (orderData.items || []).map(i => ({ gtin: i.gtin || i.upc || i.sku || '' })).filter(p => p.gtin)
@@ -456,6 +464,12 @@
         window.tryRenderOptIn = function() {
             try {
                 if (!window.gapi || !window.gapi.surveyoptin || !window.lastRenderedOrder) return;
+                
+                // Skip rendering if email is empty (required field)
+                if (!window.lastRenderedOrder.email) {
+                    console.warn('Google review opt-in skipped: email is required');
+                    return;
+                }
 
                 window.gapi.surveyoptin.render({
                     merchant_id: 5837335738,
