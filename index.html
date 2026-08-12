@@ -2039,5 +2039,19 @@
             });
         }
     </script>
+
+    <!-- Google Merchant Widget: Seller Ratings Badge -->
+    <script id='merchantWidgetScript' src="https://www.gstatic.com/shopping/merchant/merchantwidget.js" defer></script>
+    <script>
+        merchantWidgetScript.addEventListener('load', function () {
+            if (typeof merchantwidget !== 'undefined') {
+                merchantwidget.start({
+                    merchant_id: 5837335738,
+                    position: 'BOTTOM_LEFT',
+                    region: 'KE'
+                });
+            }
+        });
+    </script>
 </body>
 </html>
