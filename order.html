@@ -430,7 +430,58 @@
             document.getElementById('display-subtotal').innerText = `Ksh. ${Number(orderData.subtotal || (orderData.totalAmount - (orderData.shippingFee || 0))).toLocaleString()}`;
             document.getElementById('display-shipping').innerText = `Ksh. ${Number(orderData.shippingFee || 0).toLocaleString()}`;
             document.getElementById('display-total').innerText = `Ksh. ${Number(orderData.totalAmount).toLocaleString()}`;
+
+            // 5. Expose minimal order data for Google review opt-in
+            try {
+                const isoDelivery = deliveryDate.toISOString().slice(0,10); // YYYY-MM-DD
+                window.lastRenderedOrder = {
+                    orderId: orderData.orderId || orderData._id || '',
+                    email: orderData.email || orderData.customerEmail || orderData.userEmail || '',
+                    deliveryCountry: (orderData.shippingAddress && orderData.shippingAddress.countryCode) || orderData.deliveryCountry || 'KE',
+                    estimatedDeliveryDateISO: isoDelivery,
+                    products: (orderData.items || []).map(i => ({ gtin: i.gtin || i.upc || i.sku || '' })).filter(p => p.gtin)
+                };
+
+                // Attempt to render the Google review opt-in if the platform is ready
+                if (typeof window.tryRenderOptIn === 'function') window.tryRenderOptIn();
+            } catch (err) {
+                console.warn('Could not prepare Google review opt-in data', err);
+            }
         }
+    </script>
+    <!-- Google review opt-in: loads platform and attempts to render when order data is available -->
+    <script src="https://apis.google.com/js/platform.js?onload=renderOptIn" async defer></script>
+    <script>
+        // Try to render if gapi and order data are available
+        window.tryRenderOptIn = function() {
+            try {
+                if (!window.gapi || !window.gapi.surveyoptin || !window.lastRenderedOrder) return;
+
+                window.gapi.surveyoptin.render({
+                    merchant_id: 5837335738,
+                    order_id: String(window.lastRenderedOrder.orderId || ''),
+                    email: window.lastRenderedOrder.email || '',
+                    delivery_country: window.lastRenderedOrder.deliveryCountry || 'KE',
+                    estimated_delivery_date: window.lastRenderedOrder.estimatedDeliveryDateISO || '',
+                    products: window.lastRenderedOrder.products || []
+                });
+            } catch (e) {
+                console.error('Survey opt-in render error', e);
+            }
+        };
+
+        // Called by the platform script when it loads
+        window.renderOptIn = function() {
+            if (window.gapi && window.gapi.load) {
+                window.gapi.load('surveyoptin', function() {
+                    // surveyoptin module loaded — try to render immediately
+                    window.tryRenderOptIn();
+                });
+            } else {
+                // If gapi not ready yet, try again shortly
+                setTimeout(window.renderOptIn, 500);
+            }
+        };
     </script>
 </body>
 </html>
