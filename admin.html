@@ -1881,10 +1881,16 @@
         const pageItems = getPageData(items, 'orders');
         tbody.innerHTML = pageItems.map(order => {
             const orderDate = new Date(order.createdAt).toLocaleDateString('en-GB');
+
+            const firstName = order.billingDetails?.firstName || "Unknown";
+            const lastName = order.billingDetails?.lastName || "";
+            const phone = order.billingDetails?.phone || "";
+            const email = order.billingDetails?.email || "";
+
             return `
                 <tr>
                     <td><strong>#${order.orderId || order._id.slice(-6)}</strong></td>
-                    <td>${order.billingDetails.firstName} ${order.billingDetails.lastName}</td>
+                    <td>${firstName} ${lastName}</td>
                     <td>Ksh. ${Number(order.totalAmount).toLocaleString()}</td>
                     <td>
                         <span class="status-badge ${order.status.toLowerCase()}">${order.status}</span>
@@ -1898,6 +1904,7 @@
                 </tr>
             `;
         }).join('');
+
 
         renderPaginationControls('orders', items.length, 'ordersPagination');
     }
