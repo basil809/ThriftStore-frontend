@@ -60,6 +60,107 @@
         --background-image: url("public/images/background.png");
       }
 
+      .detail-skeleton {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        gap: 50px;
+        width: min(100%, 1140px);
+        margin: 0 auto;
+      }
+
+      .detail-skeleton-block {
+        position: relative;
+        overflow: hidden;
+        background: #e9e9e9;
+        border-radius: 6px;
+      }
+
+      .detail-skeleton-block::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+        transform: translateX(-100%);
+        animation: detail-skeleton-shimmer 1.4s infinite;
+      }
+
+      @keyframes detail-skeleton-shimmer {
+        100% { transform: translateX(100%); }
+      }
+
+      .detail-skeleton-image {
+        width: 100%;
+        aspect-ratio: 1;
+      }
+
+      .detail-skeleton-thumbs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .detail-skeleton-thumb {
+        aspect-ratio: 1;
+      }
+
+      .detail-skeleton-line {
+        height: 15px;
+        margin: 0 0 18px;
+      }
+
+      .detail-skeleton-line.title {
+        width: 75%;
+        height: 32px;
+        margin-top: 12px;
+      }
+
+      .detail-skeleton-line.price {
+        width: 35%;
+        height: 26px;
+      }
+
+      .detail-skeleton-line.description {
+        width: 90%;
+        height: 70px;
+      }
+
+      .detail-skeleton-line.short {
+        width: 45%;
+      }
+
+      .detail-skeleton-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .detail-skeleton-button {
+        width: 125px;
+        height: 42px;
+      }
+
+      .product-container.is-loading .detail-content {
+        display: none;
+      }
+
+      .product-container:not(.is-loading) .detail-skeleton {
+        display: none;
+      }
+
+      @media (max-width: 900px) {
+        .detail-skeleton {
+          grid-template-columns: 1fr;
+          gap: 25px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .detail-skeleton-block::after {
+          animation: none;
+        }
+      }
+
       body {
         margin: 0;
         background: #fff;
@@ -1705,10 +1806,32 @@
 </div>
 
 <!-- PRODUCT DETAILS -->
-<section class="product-container">
+<section class="product-container is-loading" aria-busy="true">
+  <div class="detail-skeleton" aria-label="Loading product details">
+    <div>
+      <div class="detail-skeleton-block detail-skeleton-image"></div>
+      <div class="detail-skeleton-thumbs">
+        <div class="detail-skeleton-block detail-skeleton-thumb"></div>
+        <div class="detail-skeleton-block detail-skeleton-thumb"></div>
+        <div class="detail-skeleton-block detail-skeleton-thumb"></div>
+        <div class="detail-skeleton-block detail-skeleton-thumb"></div>
+      </div>
+    </div>
+    <div>
+      <div class="detail-skeleton-block detail-skeleton-line short"></div>
+      <div class="detail-skeleton-block detail-skeleton-line title"></div>
+      <div class="detail-skeleton-block detail-skeleton-line price"></div>
+      <div class="detail-skeleton-block detail-skeleton-line description"></div>
+      <div class="detail-skeleton-block detail-skeleton-line short"></div>
+      <div class="detail-skeleton-actions">
+        <div class="detail-skeleton-block detail-skeleton-button"></div>
+        <div class="detail-skeleton-block detail-skeleton-button"></div>
+      </div>
+    </div>
+  </div>
   <!-- PRODUCT DETAILS -->
 <!-- Use a proper Bootstrap container for standard page width -->
-<div class="container mt-5 mb-5">
+<div class="container mt-5 mb-5 detail-content">
   <!-- Main Row: Ensure columns are direct children of a row -->
   <!-- Replaced gx-5 (B5) with standard h-spacing/gutters provided by BS4 .row -->
   <div class="row"> 
@@ -2116,6 +2239,13 @@
         let currentItem = null;
         let itemType = "product";
 
+        function finishDetailLoading() {
+          const productContainer = document.querySelector('.product-container');
+          if (!productContainer) return;
+          productContainer.classList.remove('is-loading');
+          productContainer.setAttribute('aria-busy', 'false');
+        }
+
         function formatUsdCurrency(amount) {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
@@ -2297,6 +2427,7 @@
                 document.getElementById('displayPrice').innerHTML = 'Ksh. 0';
                 document.getElementById('breadcrumbCat').textContent = 'Shop';
                 document.getElementById('displayCategory').textContent = 'Shop';
+                finishDetailLoading();
                 return;
             }
 
@@ -2591,6 +2722,7 @@
                     const platform = button.dataset.platform;
                     await shareProduct(platform);
                 });
+                    finishDetailLoading();
             });
           });
     </script>
