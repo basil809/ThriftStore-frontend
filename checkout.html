@@ -37,6 +37,7 @@
         content="Shop affordable thrift fashion, vintage clothing, shoes and accessories online at Retro Rack. Fast delivery across Kenya."
     >
   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Checkout | Retro Rack</title>
 
   <link rel="icon" type="image/png" href="images/system_img/default.png">
@@ -386,9 +387,14 @@
             <span>Sub Total</span>
             <span id="summary-subtotal">Ksh. 0.00</span> </div>
 
+        <label class="shipping-option" for="shipping-checkbox">
+            <input type="checkbox" id="shipping-checkbox">
+            <span>Add delivery shipping (Ksh. 250.00)</span>
+        </label>
+
         <div class="summary-item">
             <span>Shipping</span>
-            <span id="summary-shipping">Ksh. 250.00</span> </div>
+            <span id="summary-shipping">Ksh. 0.00</span> </div>
 
         <div class="summary-item">
             <span>Coupon Discount</span>
@@ -624,7 +630,7 @@
                         });
                     }
 
-                    const shipping = subtotal > 0 ? 250 : 0;
+                    const shipping = getShippingFee(subtotal);
                     const total = subtotal + shipping;
 
                     document.getElementById('summary-item-count').innerText = itemCount;
@@ -667,7 +673,7 @@
                     });
 
                     const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-                    const shippingFee = subtotal > 0 ? 250 : 0;
+                    const shippingFee = getShippingFee(subtotal);
                     const totalAmount = subtotal + shippingFee;
 
                     const orderData = {
@@ -704,6 +710,30 @@
             };
         </script>
         <script>
+            const SHIPPING_FEE = 250;
+            let shippingSelected = false;
+
+            function getShippingFee(subtotal) {
+                return shippingSelected && subtotal > 0 ? SHIPPING_FEE : 0;
+            }
+
+            function refreshOrderSummary() {
+                const cartItems = window.checkoutCartItems || [];
+                const subtotal = cartItems.reduce((sum, item) => {
+                    const product = item.itemData || {};
+                    const price = Number(product.price ?? product.newPrice ?? 0);
+                    return sum + (price * item.qty);
+                }, 0);
+                const shipping = getShippingFee(subtotal);
+                document.getElementById('summary-shipping').innerText = `Ksh. ${shipping.toLocaleString()}`;
+                document.getElementById('summary-total').innerText = `Ksh. ${(subtotal + shipping).toLocaleString()}`;
+            }
+
+            document.getElementById('shipping-checkbox').addEventListener('change', function() {
+                shippingSelected = this.checked;
+                refreshOrderSummary();
+            });
+
             document.getElementById('continueToPayment').addEventListener('click', function() {
                 // 1. Save to LocalStorage
                 const billingData = {
@@ -904,7 +934,7 @@
                     };
                 });
                 const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-                const shippingFee = subtotal > 0 ? 250 : 0;
+                const shippingFee = getShippingFee(subtotal);
                 const totalAmount = subtotal + shippingFee;
                 return {
                     billingDetails: {

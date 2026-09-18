@@ -37,11 +37,13 @@
         content="Shop affordable thrift fashion, vintage clothing, shoes and accessories online at Retro Rack. Fast delivery across Kenya."
     >
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Order | Retro Rack</title>
 
     <link rel="icon" type="image/png" href="images/system_img/default.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="css/general css/checkout.css">
     <style>
         body {
@@ -234,7 +236,7 @@
         <div><strong>Payment Method</strong><br>M-pesa</div>
         <div><strong>Transaction ID</strong><br><span id="display-trx-id">----</span></div>
         <div><strong>Estimated Delivery Date</strong><br><span id="display-delivery-date">----</span></div>
-        <button class="invoice-btn" onclick="window.print()">Print Receipt</button>
+        <button class="invoice-btn" id="downloadReceiptBtn" type="button">Download Receipt</button>
     </section>
 
     <!-- ORDER DETAILS -->
@@ -409,6 +411,7 @@
         }
 
         function renderOrderDetails(orderData) {
+            window.currentOrderData = orderData;
             // 1. Populate the Info Bar
             // Use the ID from your HTML (make sure IDs match your HTML exactly)
             document.getElementById('display-order-id').innerText = `#${orderData.orderId}`;
@@ -478,6 +481,53 @@
                 console.warn('Could not prepare Google review opt-in data', err);
             }
         }
+
+        document.getElementById('downloadReceiptBtn').addEventListener('click', () => {
+            const order = window.currentOrderData;
+            if (!order || typeof html2pdf === 'undefined') return;
+
+            const button = document.getElementById('downloadReceiptBtn');
+            const receipt = document.createElement('div');
+            receipt.style.cssText = 'width: 760px; padding: 32px; color: #222; background: #fff; font-family: Arial, sans-serif;';
+            receipt.innerHTML = `
+                <h1 style="color: #ff5722; margin: 0 0 8px;">Retro Rack</h1>
+                <h2 style="margin: 0 0 24px;">Order Receipt</h2>
+                <p><strong>Order ID:</strong> #${order.orderId || '----'}<br>
+                <strong>Payment Method:</strong> M-pesa<br>
+                <strong>Transaction ID:</strong> ${order.transactionId || 'N/A'}<br>
+                <strong>Estimated Delivery:</strong> ${document.getElementById('display-delivery-date').innerText}</p>
+                <hr>
+                <h3>Order Details</h3>
+                ${(order.items || []).map(item => {
+                    const quantity = item.qty || item.quantity || 1;
+                    return `<p style="display: flex; justify-content: space-between; gap: 24px; margin: 12px 0;">
+                        <span>${item.name || item.productName || 'Item'} x${quantity}</span>
+                        <strong>Ksh. ${Number(item.price * quantity).toLocaleString()}</strong>
+                    </p>`;
+                }).join('')}
+                <hr>
+                <p style="display: flex; justify-content: space-between;"><span>Subtotal</span><span>${document.getElementById('display-subtotal').innerText}</span></p>
+                <p style="display: flex; justify-content: space-between;"><span>Shipping</span><span>${document.getElementById('display-shipping').innerText}</span></p>
+                <p style="display: flex; justify-content: space-between; font-size: 18px;"><strong>Total</strong><strong>${document.getElementById('display-total').innerText}</strong></p>
+                <p style="margin-top: 32px; color: #666;">Thank you for shopping with Retro Rack.</p>
+            `;
+
+            button.disabled = true;
+            button.innerText = 'Preparing PDF...';
+            document.body.appendChild(receipt);
+
+            html2pdf().set({
+                margin: 0.5,
+                filename: `retro-rack-order-${order.orderId || 'receipt'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            }).from(receipt).save().then(() => {
+                receipt.remove();
+                button.disabled = false;
+                button.innerText = 'Download Receipt';
+            });
+        });
     </script>
     <!-- Google review opt-in: loads platform and attempts to render when order data is available -->
     <script src="https://apis.google.com/js/platform.js?onload=renderOptIn" async defer></script>
