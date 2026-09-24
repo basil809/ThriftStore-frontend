@@ -44,6 +44,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="css/general css/checkout.css">
     <style>
         body {
@@ -484,43 +485,75 @@
 
         document.getElementById('downloadReceiptBtn').addEventListener('click', () => {
             const order = window.currentOrderData;
-            if (!order || typeof html2pdf === 'undefined') return;
+            if (!order || typeof html2pdf === 'undefined' || typeof QRCode === 'undefined') return;
 
             const button = document.getElementById('downloadReceiptBtn');
             const receipt = document.createElement('div');
-            receipt.style.cssText = 'width: 760px; padding: 32px; color: #222; background: #fff; font-family: Arial, sans-serif;';
+            receipt.style.cssText = 'width: 700px; min-height: 990px; padding: 42px 52px 34px; color: #171717; background: #fff; font-family: Arial, sans-serif;';
+            const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+            }[character]));
+            const orderId = escapeHtml(order.orderId || '----');
+            const transactionId = escapeHtml(order.transactionId || 'N/A');
+            const deliveryDate = escapeHtml(document.getElementById('display-delivery-date').innerText);
+            const orderItems = (order.items || []).map(item => {
+                const quantity = item.qty || item.quantity || 1;
+                const itemName = escapeHtml(item.name || item.productName || 'Item');
+                const itemTotal = Number(item.price * quantity).toLocaleString('en-KE', { minimumFractionDigits: 2 });
+                return `
+                    <div style="display: grid; grid-template-columns: 1fr 48px 120px; gap: 10px; align-items: center; padding: 13px 0; border-bottom: 1px dashed #9a9a9a; font-size: 15px;">
+                        <span>${itemName}</span>
+                        <span style="text-align: center;">qty ${quantity}</span>
+                        <strong style="text-align: right;">Ksh. ${itemTotal}</strong>
+                    </div>`;
+            }).join('');
+
             receipt.innerHTML = `
-                <h1 style="color: #ff5722; margin: 0 0 8px;">Retro Rack</h1>
-                <h2 style="margin: 0 0 24px;">Order Receipt</h2>
-                <p><strong>Order ID:</strong> #${order.orderId || '----'}<br>
-                <strong>Payment Method:</strong> M-pesa<br>
-                <strong>Transaction ID:</strong> ${order.transactionId || 'N/A'}<br>
-                <strong>Estimated Delivery:</strong> ${document.getElementById('display-delivery-date').innerText}</p>
-                <hr>
-                <h3>Order Details</h3>
-                ${(order.items || []).map(item => {
-                    const quantity = item.qty || item.quantity || 1;
-                    return `<p style="display: flex; justify-content: space-between; gap: 24px; margin: 12px 0;">
-                        <span>${item.name || item.productName || 'Item'} x${quantity}</span>
-                        <strong>Ksh. ${Number(item.price * quantity).toLocaleString()}</strong>
-                    </p>`;
-                }).join('')}
-                <hr>
-                <p style="display: flex; justify-content: space-between;"><span>Subtotal</span><span>${document.getElementById('display-subtotal').innerText}</span></p>
-                <p style="display: flex; justify-content: space-between;"><span>Shipping</span><span>${document.getElementById('display-shipping').innerText}</span></p>
-                <p style="display: flex; justify-content: space-between; font-size: 18px;"><strong>Total</strong><strong>${document.getElementById('display-total').innerText}</strong></p>
-                <p style="margin-top: 32px; color: #666;">Thank you for shopping with Retro Rack.</p>
+                <div style="text-align: center;">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 14px;">
+                        <img src="images/system_img/cover.png" crossorigin="anonymous" style="width: 68px; height: 68px; object-fit: cover; border-radius: 18px;">
+                        <strong style="font-size: 30px; color: #ef5b18;">Retro-rack.store</strong>
+                    </div>
+                    <h1 style="font-family: Georgia, serif; font-size: 29px; font-weight: 400; margin: 30px 0 22px;">Your order is on its way!</h1>
+                    <div id="receiptQr" style="width: 190px; height: 190px; margin: 0 auto 25px; padding: 8px; border: 5px solid #ef5b18; background: #fff;"></div>
+                </div>
+                <div style="font-size: 14px; color: #333; margin-bottom: 22px;">
+                    <strong>Order ID:</strong> #${orderId}<br>
+                    <strong>Payment:</strong> M-pesa &nbsp;&nbsp; <strong>Transaction:</strong> ${transactionId}<br>
+                    <strong>Estimated delivery:</strong> ${deliveryDate}
+                </div>
+                <div style="font-size: 22px; margin-bottom: 10px;">Here's your receipt</div>
+                <div style="border-top: 1px dashed #9a9a9a; border-bottom: 1px dashed #9a9a9a;">
+                    ${orderItems}
+                </div>
+                <div style="margin-top: 18px; font-size: 16px;">
+                    <p style="display: flex; justify-content: space-between; margin: 8px 0;"><span>Subtotal</span><span>${document.getElementById('display-subtotal').innerText}</span></p>
+                    <p style="display: flex; justify-content: space-between; margin: 8px 0;"><span>Shipping</span><span>${document.getElementById('display-shipping').innerText}</span></p>
+                    <p style="display: flex; justify-content: space-between; border-top: 2px solid #bdbdbd; padding-top: 12px; margin-top: 14px; font-size: 23px;"><strong>Total</strong><strong>${document.getElementById('display-total').innerText}</strong></p>
+                </div>
+                <div style="text-align: center; margin-top: 92px; color: #c66b30; font-size: 18px;">
+                    <p>We're glad you ordered from us and hope you love it!</p>
+                    <p style="color: #222; font-size: 14px; margin-top: 24px;">Instagram: retro_rack_thriftstore &nbsp; | &nbsp; TikTok: Retro_Rack_Thriftstore &nbsp; | &nbsp; WhatsApp: +254742743059</p>
+                </div>
             `;
 
             button.disabled = true;
             button.innerText = 'Preparing PDF...';
             document.body.appendChild(receipt);
+            new QRCode(receipt.querySelector('#receiptQr'), {
+                text: `https://retro-rack.store/order.html?id=${orderId}`,
+                width: 170,
+                height: 170,
+                colorDark: '#111111',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
 
             html2pdf().set({
-                margin: 0.5,
+                margin: 0.25,
                 filename: `retro-rack-order-${order.orderId || 'receipt'}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             }).from(receipt).save().then(() => {
                 receipt.remove();
