@@ -937,6 +937,112 @@
 
         .table-container { overflow-x: auto; }
         table { min-width: 700px; }
+
+        .admin-order-modal .modal-content {
+            max-width: 900px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            margin: 0 auto;
+        }
+
+        .admin-order-modal.modal.active {
+            padding: 20px;
+        }
+
+        .admin-order-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 16px;
+        }
+
+        .admin-order-items {
+            display: grid;
+            gap: 12px;
+        }
+
+        .admin-order-item {
+            display: grid;
+            grid-template-columns: 1.1fr 1.3fr 1fr 0.7fr 0.7fr 0.7fr 1.2fr auto;
+            gap: 8px;
+            align-items: end;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .admin-order-item input {
+            min-width: 0;
+            width: 100%;
+            padding: 9px;
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+        }
+
+        .admin-order-item select {
+            min-width: 0;
+            width: 100%;
+            padding: 9px;
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+        }
+
+        .admin-order-item label {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--gray);
+            font-size: 11px;
+        }
+
+        .admin-order-fields label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .admin-order-fields input,
+        .admin-order-fields select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+            font: inherit;
+        }
+
+        .admin-order-section-title {
+            margin: 18px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 15px;
+        }
+
+        .admin-order-prompt {
+            display: flex;
+            gap: 9px;
+            align-items: center;
+            margin: 12px 0;
+        }
+
+        @media (max-width: 900px) {
+            .admin-order-item {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .admin-order-item .btn-delete {
+                grid-column: 1 / -1;
+                margin: 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .admin-order-grid {
+                grid-template-columns: 1fr;
+            }
+            .admin-order-modal.modal.active {
+                padding: 12px;
+            }
+            .admin-order-modal .modal-content {
+                padding: 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1259,6 +1365,7 @@
                 <div class="table-container">
                     <div class="table-header">
                         <h2>All Orders</h2>
+                        <button class="add-btn" id="createOrderBtn" type="button"><i class='bx bx-plus'></i> Create Order</button>
                     </div>
                     <table id="ordersTable">
                         <thead>
@@ -1278,6 +1385,52 @@
                         </tbody>
                     </table>
                     <div class="pagination-wrapper" id="ordersPagination"></div>
+                </div>
+
+                <div class="modal admin-order-modal" id="adminOrderModal" role="dialog" aria-modal="true" aria-labelledby="adminOrderModalTitle">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 id="adminOrderModalTitle">Create Client Order</h2>
+                            <button class="close-btn" type="button" aria-label="Close create order form" onclick="closeModal('adminOrderModal')">&times;</button>
+                        </div>
+                        <form id="adminOrderForm" class="admin-order-fields">
+                            <h3 class="admin-order-section-title">Customer Details</h3>
+                            <div class="admin-order-grid">
+                                <div class="form-group"><label for="orderFirstName">First name</label><input id="orderFirstName" name="firstName" required></div>
+                                <div class="form-group"><label for="orderLastName">Last name</label><input id="orderLastName" name="lastName" required></div>
+                                <div class="form-group"><label for="orderPhone">Phone</label><input id="orderPhone" name="phone" type="tel" required></div>
+                                <div class="form-group"><label for="orderEmail">Email</label><input id="orderEmail" name="email" type="email"></div>
+                                <div class="form-group"><label for="orderAddress">Address</label><input id="orderAddress" name="address"></div>
+                                <div class="form-group"><label for="orderCity">City</label><input id="orderCity" name="city"></div>
+                                <div class="form-group"><label for="orderState">State / County</label><input id="orderState" name="state"></div>
+                                <div class="form-group"><label for="orderCountry">Country</label><input id="orderCountry" name="country" value="Kenya"></div>
+                            </div>
+
+                            <h3 class="admin-order-section-title">Items</h3>
+                            <div class="admin-order-items" id="adminOrderItems"></div>
+                            <button class="btn-small btn-edit" id="addOrderItemBtn" type="button">Add item</button>
+
+                            <h3 class="admin-order-section-title">Order Details</h3>
+                            <div class="admin-order-grid">
+                                <div class="form-group"><label for="orderSubtotal">Subtotal</label><input id="orderSubtotal" type="number" min="0" step="0.01" value="0" readonly></div>
+                                <div class="form-group"><label for="orderShippingFee">Shipping fee</label><input id="orderShippingFee" type="number" min="0" step="0.01" value="0" required></div>
+                                <div class="form-group"><label for="orderTotalAmount">Total amount</label><input id="orderTotalAmount" type="number" min="0" step="0.01" value="0" readonly></div>
+                                <div class="form-group">
+                                    <label for="orderStatus">Order status</label>
+                                    <select id="orderStatus"><option>Pending</option><option>Processing</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="orderPaymentStatus">Payment status</label>
+                                    <select id="orderPaymentStatus"><option>Unpaid</option><option>Pending</option><option>Paid</option><option>Failed</option></select>
+                                </div>
+                            </div>
+                            <label class="admin-order-prompt"><input id="orderSendPrompt" type="checkbox"> Send an M-Pesa payment prompt to this phone</label>
+                            <div class="modal-footer">
+                                <button class="btn-cancel" type="button" onclick="closeModal('adminOrderModal')">Close</button>
+                                <button class="btn-save" id="saveAdminOrderBtn" type="submit">Create Order</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -1878,6 +2031,14 @@
             return;
         }
 
+        const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        })[character]);
+
         const pageItems = getPageData(items, 'orders');
         tbody.innerHTML = pageItems.map(order => {
             const orderDate = new Date(order.createdAt).toLocaleDateString('en-GB');
@@ -1890,7 +2051,7 @@
             return `
                 <tr>
                     <td><strong>#${order.orderId || order._id.slice(-6)}</strong></td>
-                    <td>${firstName} ${lastName}</td>
+                    <td>${escapeHtml(firstName)} ${escapeHtml(lastName)}</td>
                     <td>Ksh. ${Number(order.totalAmount).toLocaleString()}</td>
                     <td>
                         <span class="status-badge ${order.status.toLowerCase()}">${order.status}</span>
@@ -2049,6 +2210,189 @@
     function closeModal(id) {
         document.getElementById(id).classList.remove('active');
     }
+
+    function setAdminOrderSelectOptions(select, options, placeholder) {
+        select.replaceChildren();
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.textContent = placeholder;
+        select.appendChild(placeholderOption);
+
+        options.forEach(option => {
+            const element = document.createElement('option');
+            element.value = option.value;
+            element.textContent = option.label;
+            select.appendChild(element);
+        });
+    }
+
+    function updateAdminOrderItemProduct(row) {
+        const productId = row.querySelector('[data-order-item="productSelection"]').value;
+        const product = products.find(item => item._id === productId);
+        const productIdInput = row.querySelector('[data-order-item="productId"]');
+        const priceInput = row.querySelector('[data-order-item="price"]');
+        const sizeSelect = row.querySelector('[data-order-item="size"]');
+        const colorSelect = row.querySelector('[data-order-item="color"]');
+        const imageSelect = row.querySelector('[data-order-item="image"]');
+
+        productIdInput.value = product?._id || '';
+        priceInput.value = product ? Number(product.price).toFixed(2) : '0';
+        setAdminOrderSelectOptions(sizeSelect, (product?.sizes || []).map(size => ({ value: size, label: size })), 'No size');
+        setAdminOrderSelectOptions(colorSelect, (product?.colors || []).map(color => ({ value: color, label: color })), 'No color');
+        setAdminOrderSelectOptions(imageSelect, (product?.images || []).map((image, index) => ({
+            value: image,
+            label: `Image ${index + 1}`
+        })), 'No image');
+        updateAdminOrderTotals();
+    }
+
+    function addAdminOrderItem() {
+        const row = document.createElement('div');
+        row.className = 'admin-order-item';
+        row.innerHTML = `
+            <div><label>Product ID</label><input data-order-item="productId" readonly></div>
+            <div><label>Item name</label><select data-order-item="productSelection" required></select></div>
+            <div><label>Price</label><input data-order-item="price" type="number" min="0" step="0.01" value="0" readonly required></div>
+            <div><label>Qty</label><input data-order-item="qty" type="number" min="1" step="1" value="1" required></div>
+            <div><label>Size</label><select data-order-item="size"></select></div>
+            <div><label>Color</label><select data-order-item="color"></select></div>
+            <div><label>Image</label><select data-order-item="image"></select></div>
+            <button class="btn-small btn-delete" type="button" data-remove-order-item>Remove</button>
+        `;
+        document.getElementById('adminOrderItems').appendChild(row);
+
+        const productSelect = row.querySelector('[data-order-item="productSelection"]');
+        setAdminOrderSelectOptions(productSelect, products.map(product => ({
+            value: product._id,
+            label: `${product.name} - Ksh. ${Number(product.price).toLocaleString()}`
+        })), products.length ? 'Choose a product' : 'No products available');
+        productSelect.addEventListener('change', () => updateAdminOrderItemProduct(row));
+        row.querySelector('[data-order-item="qty"]').addEventListener('input', updateAdminOrderTotals);
+    }
+
+    function updateAdminOrderTotals() {
+        const subtotal = Array.from(document.querySelectorAll('#adminOrderItems .admin-order-item')).reduce((sum, row) => {
+            const price = Number(row.querySelector('[data-order-item="price"]').value) || 0;
+            const quantity = Number(row.querySelector('[data-order-item="qty"]').value) || 0;
+            return sum + price * quantity;
+        }, 0);
+        const shippingFee = Number(document.getElementById('orderShippingFee').value) || 0;
+        document.getElementById('orderSubtotal').value = subtotal.toFixed(2);
+        document.getElementById('orderTotalAmount').value = (subtotal + shippingFee).toFixed(2);
+    }
+
+    document.getElementById('createOrderBtn').addEventListener('click', async event => {
+        const createButton = event.currentTarget;
+        createButton.disabled = true;
+        try {
+            const latestProducts = await loadProducts();
+            if (!latestProducts) {
+                alert('Products could not be loaded. Please try again.');
+                return;
+            }
+
+            const form = document.getElementById('adminOrderForm');
+            form.reset();
+            document.getElementById('orderCountry').value = 'Kenya';
+            document.getElementById('adminOrderItems').innerHTML = '';
+            addAdminOrderItem();
+            updateAdminOrderTotals();
+            openModal('adminOrderModal');
+        } finally {
+            createButton.disabled = false;
+        }
+    });
+
+    document.getElementById('addOrderItemBtn').addEventListener('click', addAdminOrderItem);
+    document.getElementById('orderShippingFee').addEventListener('input', updateAdminOrderTotals);
+    document.getElementById('adminOrderItems').addEventListener('click', event => {
+        const removeButton = event.target.closest('[data-remove-order-item]');
+        if (!removeButton) return;
+        const rows = document.querySelectorAll('#adminOrderItems .admin-order-item');
+        if (rows.length === 1) {
+            rows[0].remove();
+            addAdminOrderItem();
+        } else {
+            removeButton.closest('.admin-order-item').remove();
+        }
+        updateAdminOrderTotals();
+    });
+
+    document.getElementById('adminOrderForm').addEventListener('submit', async event => {
+        event.preventDefault();
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Please log in as an admin to create orders.');
+            return;
+        }
+
+        const items = Array.from(document.querySelectorAll('#adminOrderItems .admin-order-item')).map(row => {
+            const getValue = key => row.querySelector(`[data-order-item="${key}"]`).value.trim();
+            const product = products.find(product => product._id === getValue('productSelection'));
+            const item = {
+                name: product?.name || '',
+                price: Number(getValue('price')),
+                qty: Number(getValue('qty')),
+                size: getValue('size'),
+                color: getValue('color'),
+                image: getValue('image')
+            };
+            const productId = getValue('productId');
+            if (productId) item.productId = productId;
+            return item;
+        });
+
+        if (items.some(item => !item.productId || !item.name || !Number.isFinite(item.price) || item.price < 0 || !Number.isInteger(item.qty) || item.qty < 1)) {
+            alert('Choose a product and enter a valid quantity for each item.');
+            return;
+        }
+
+        const billingDetails = Object.fromEntries(
+            ['firstName', 'lastName', 'phone', 'email', 'address', 'city', 'state', 'country']
+                .map(field => [field, document.getElementById(`order${field[0].toUpperCase()}${field.slice(1)}`).value.trim()])
+        );
+        const payload = {
+            billingDetails,
+            items,
+            subtotal: Number(document.getElementById('orderSubtotal').value),
+            shippingFee: Number(document.getElementById('orderShippingFee').value),
+            totalAmount: Number(document.getElementById('orderTotalAmount').value),
+            status: document.getElementById('orderStatus').value,
+            paymentStatus: document.getElementById('orderPaymentStatus').value
+        };
+        const sendPrompt = document.getElementById('orderSendPrompt').checked;
+        const submitButton = document.getElementById('saveAdminOrderBtn');
+        submitButton.disabled = true;
+        submitButton.textContent = sendPrompt ? 'Creating and sending...' : 'Creating...';
+
+        try {
+            const endpoint = sendPrompt
+                ? 'https://thriftstore-backend-0vkj.onrender.com/api/payments/paycloud/admin-stk-push'
+                : 'https://thriftstore-backend-0vkj.onrender.com/api/orders/admin/create';
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                if (result.orderId) loadAdminOrders();
+                throw new Error(result.message || 'Unable to create order.');
+            }
+
+            closeModal('adminOrderModal');
+            await loadAdminOrders();
+            alert(result.message || 'Order created successfully.');
+        } catch (error) {
+            alert(error.message || 'Unable to create order.');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Create Order';
+        }
+    });
 
     // ====== PRODUCTS ======
     document.getElementById('addProductBtn').addEventListener('click', () => {
@@ -2367,14 +2711,18 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
+            if (!res.ok) throw new Error('Failed to fetch products');
             const data = await res.json();
+            if (!Array.isArray(data)) throw new Error('Unexpected products response');
             products = data;
             paginationState.products = 1;
             renderProductsTable(products);
             updateDashboard();
+            return products;
 
         } catch (err) {
             console.error(err);
+            return null;
         }
     }
 

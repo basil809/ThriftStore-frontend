@@ -151,6 +151,13 @@
 
         function renderAdminView(order) {
             const bill = order.billingDetails;
+            const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[character]);
 
             // Header & Info
             document.getElementById('order-title').innerText = `Order #${order.orderId}`;
@@ -178,8 +185,8 @@
                     <div class="item-info">
                         <img src="${resolveImageUrl(item.image)}" class="item-img" alt="product">
                         <div>
-                            <h4>${item.name}</h4>
-                            <small>Color: ${item.color} | Size: ${item.size}</small>
+                            <h4>${escapeHtml(item.name)}</h4>
+                            <small>Color: ${escapeHtml(item.color)} | Size: ${escapeHtml(item.size)}</small>
                         </div>
                     </div>
                     <div>${item.qty} x Ksh. ${Number(item.price).toLocaleString()}</div>
