@@ -375,9 +375,11 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const urlOrderId = urlParams.get('id');
+            const receiptToken = urlParams.get('receipt');
 
-            // Check if we are viewing a specific order via URL ID
-            if (urlOrderId) {
+            if (receiptToken) {
+                await fetchPublicReceipt(receiptToken);
+            } else if (urlOrderId) {
                 await fetchOrderFromServer(urlOrderId);
             } 
             // Otherwise, check if we just placed an order (localStorage)
@@ -408,6 +410,21 @@
             } catch (err) {
                 console.error("Fetch Error:", err);
                 alert("Error connecting to server.");
+            }
+        }
+
+        async function fetchPublicReceipt(receiptToken) {
+            try {
+                const res = await fetch(`${API}/orders/receipt/${encodeURIComponent(receiptToken)}`);
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    alert(data.message || 'Receipt not found.');
+                    return;
+                }
+                renderOrderDetails(data.receipt);
+            } catch (err) {
+                console.error('Receipt lookup error:', err);
+                alert('Unable to load this receipt. Please try again later.');
             }
         }
 
@@ -486,6 +503,10 @@
         document.getElementById('downloadReceiptBtn').addEventListener('click', () => {
             const order = window.currentOrderData;
             if (!order || typeof html2pdf === 'undefined' || typeof QRCode === 'undefined') return;
+            if (!order.receiptToken) {
+                alert('This order needs to be refreshed before a secure receipt QR code can be created.');
+                return;
+            }
 
             const button = document.getElementById('downloadReceiptBtn');
             const receipt = document.createElement('div');
@@ -541,7 +562,7 @@
             button.innerText = 'Preparing PDF...';
             document.body.appendChild(receipt);
             new QRCode(receipt.querySelector('#receiptQr'), {
-                text: `https://retro-rack.store/order.html?id=${orderId}`,
+                text: `https://retro-rack.store/order.html?receipt=${encodeURIComponent(order.receiptToken)}`,
                 width: 170,
                 height: 170,
                 colorDark: '#111111',

@@ -41,6 +41,8 @@
     <title>Admin - Order Details</title>
     <link rel="icon" type="image/png" href="images/system_img/default.png">
     <link rel="stylesheet" href="css/styles.css"> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         .backBtn{
             background: #ff5722;
@@ -63,7 +65,7 @@
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
         .pending { background: #fff3cd; color: #856404; }
         .order-actions { display: flex; gap: 10px; margin: 16px 0; }
-        .printBtn {
+        .downloadBtn {
             background: #222;
             color: white;
             padding: 8px 14px;
@@ -88,7 +90,7 @@
             <h1 id="order-title">Order #---</h1>
         </header>
         <div class="order-actions no-print">
-            <button class="printBtn" type="button" onclick="window.print()">Print Order</button>
+            <button class="downloadBtn" id="downloadReceiptBtn" type="button">Download Receipt</button>
         </div>
         
 
@@ -163,6 +165,8 @@
 
                 if (data.success) {
                     renderAdminView(data.order);
+                } else {
+                    alert(data.message || "Order could not be loaded.");
                 }
             } catch (err) {
                 console.error(err);
@@ -170,6 +174,7 @@
         });
 
         function renderAdminView(order) {
+            window.currentOrderData = order;
             const bill = order.billingDetails;
             const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
                 '&': '&amp;',
@@ -219,6 +224,103 @@
             document.getElementById('shipping').innerText = `Ksh. ${Number(order.shippingFee || 0).toLocaleString()}`;
             document.getElementById('total-amount').innerText = `Ksh. ${Number(order.totalAmount).toLocaleString()}`;
         }
+
+        document.getElementById('downloadReceiptBtn').addEventListener('click', async event => {
+            const order = window.currentOrderData;
+            const button = event.currentTarget;
+            if (!order) {
+                alert('Order details are not ready yet.');
+                return;
+            }
+            if (typeof html2pdf === 'undefined' || typeof QRCode === 'undefined') {
+                alert('Receipt download is unavailable. Check your internet connection and try again.');
+                return;
+            }
+
+            const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+            }[character]));
+            const orderId = escapeHtml(order.orderId || '----');
+            const transactionId = escapeHtml(order.transactionId || 'N/A');
+            const orderDate = order.createdAt ? new Date(order.createdAt) : new Date();
+            const deliveryDate = new Date(orderDate);
+            deliveryDate.setDate(deliveryDate.getDate() + 3);
+            const estimatedDelivery = deliveryDate.toLocaleDateString('en-GB', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+            const orderItems = (order.items || []).map(item => {
+                const quantity = Number(item.qty || item.quantity || 1);
+                const itemName = escapeHtml(item.name || item.productName || 'Item');
+                const itemTotal = (Number(item.price) * quantity).toLocaleString('en-KE', { minimumFractionDigits: 2 });
+                return `
+                    <div style="display: grid; grid-template-columns: 1fr 48px 120px; gap: 10px; align-items: center; padding: 13px 0; border-bottom: 1px dashed #9a9a9a; font-size: 15px;">
+                        <span>${itemName}</span>
+                        <span style="text-align: center;">qty ${quantity}</span>
+                        <strong style="text-align: right;">Ksh. ${itemTotal}</strong>
+                    </div>`;
+            }).join('');
+            const subtotal = Number(order.subtotal ?? (order.totalAmount - (order.shippingFee || 0)))
+                .toLocaleString('en-KE', { minimumFractionDigits: 2 });
+            const shipping = Number(order.shippingFee || 0).toLocaleString('en-KE', { minimumFractionDigits: 2 });
+            const total = Number(order.totalAmount || 0).toLocaleString('en-KE', { minimumFractionDigits: 2 });
+            const receipt = document.createElement('div');
+            receipt.style.cssText = 'width: 700px; min-height: 990px; padding: 42px 52px 34px; color: #171717; background: #fff; font-family: Arial, sans-serif;';
+            receipt.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 14px;">
+                        <img src="images/system_img/cover.png" crossorigin="anonymous" style="width: 68px; height: 68px; object-fit: cover; border-radius: 18px;">
+                        <strong style="font-size: 30px; color: #ef5b18;">Retro-rack.store</strong>
+                    </div>
+                    <h1 style="font-family: Georgia, serif; font-size: 29px; font-weight: 400; margin: 30px 0 22px;">Your order is on its way!</h1>
+                    <div id="receiptQr" style="width: 190px; height: 190px; margin: 0 auto 25px; padding: 8px; border: 5px solid #ef5b18; background: #fff;"></div>
+                </div>
+                <div style="font-size: 14px; color: #333; margin-bottom: 22px;">
+                    <strong>Order ID:</strong> #${orderId}<br>
+                    <strong>Payment:</strong> M-pesa &nbsp;&nbsp; <strong>Transaction:</strong> ${transactionId}<br>
+                    <strong>Estimated delivery:</strong> ${escapeHtml(estimatedDelivery)}
+                </div>
+                <div style="font-size: 22px; margin-bottom: 10px;">Here's your receipt</div>
+                <div style="border-top: 1px dashed #9a9a9a; border-bottom: 1px dashed #9a9a9a;">
+                    ${orderItems}
+                </div>
+                <div style="margin-top: 18px; font-size: 16px;">
+                    <p style="display: flex; justify-content: space-between; margin: 8px 0;"><span>Subtotal</span><span>Ksh. ${subtotal}</span></p>
+                    <p style="display: flex; justify-content: space-between; margin: 8px 0;"><span>Shipping</span><span>Ksh. ${shipping}</span></p>
+                    <p style="display: flex; justify-content: space-between; border-top: 2px solid #bdbdbd; padding-top: 12px; margin-top: 14px; font-size: 23px;"><strong>Total</strong><strong>Ksh. ${total}</strong></p>
+                </div>
+                <div style="text-align: center; margin-top: 92px; color: #c66b30; font-size: 18px;">
+                    <p>We're glad you ordered from us and hope you love it!</p>
+                    <p style="color: #222; font-size: 14px; margin-top: 24px;">Instagram: retro_rack_thriftstore &nbsp; | &nbsp; TikTok: Retro_Rack_Thriftstore &nbsp; | &nbsp; WhatsApp: +254742743059</p>
+                </div>`;
+
+            button.disabled = true;
+            button.textContent = 'Preparing PDF...';
+            document.body.appendChild(receipt);
+            try {
+                new QRCode(receipt.querySelector('#receiptQr'), {
+                    text: `https://retro-rack.store/order.html?receipt=${encodeURIComponent(order.receiptToken || '')}`,
+                    width: 170,
+                    height: 170,
+                    colorDark: '#111111',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+                await html2pdf().set({
+                    margin: 0.25,
+                    filename: `retro-rack-order-${String(order.orderId || 'receipt').replace(/[^a-z0-9_-]/gi, '-')}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                }).from(receipt).save();
+            } catch (error) {
+                console.error('Receipt download failed:', error);
+                alert('The receipt could not be downloaded. Please try again.');
+            } finally {
+                receipt.remove();
+                button.disabled = false;
+                button.textContent = 'Download Receipt';
+            }
+        });
 
         async function updateOrderStatus() {
             const newStatus = document.getElementById('status-update-dropdown').value;
